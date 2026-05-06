@@ -1,45 +1,58 @@
-# [Project name]
+# IDARA.ma
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A Moroccan government services directory mobile app — helps citizens find all official government services in one place, in Moroccan Arabic (Darija).
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Mobile app runs via Expo Go workflow (`artifacts/idara-ma: expo`)
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Mobile: Expo (SDK 54), Expo Router (file-based routing)
+- UI: React Native + StyleSheet, @expo/vector-icons (Feather)
+- Fonts: Inter (pre-loaded), splash in crimson red (#c62828)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/idara-ma/` — Expo mobile app
+- `artifacts/idara-ma/constants/data.ts` — all service/category data (static, in Arabic)
+- `artifacts/idara-ma/constants/colors.ts` — design tokens (navy + red Moroccan palette)
+- `artifacts/idara-ma/app/(tabs)/index.tsx` — home screen (search + category grid)
+- `artifacts/idara-ma/app/category/[categoryId].tsx` — category services list
+- `artifacts/idara-ma/app/service-detail.tsx` — service detail + official link
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Frontend-only: all data is static in `constants/data.ts` — no backend needed for a directory app
+- RTL-first: all styles use `textAlign: 'right'` and `flexDirection: 'row-reverse'` for Arabic layout
+- Stack navigation (no visible tab bar): browse categories → services → detail
+- expo-web-browser opens official government sites in an in-app browser
+- `userInterfaceStyle: "light"` — app is light mode only (government services app)
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Home screen with search (real-time filter across all services) and 6 category cards
+- 6 categories: Identity, Justice, Social Protection, Transport, Real Estate/Tax, Education
+- Each service shows required documents, warnings, source website
+- One-tap to open official Moroccan government websites
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Arabic/Darija language UI
+- RTL layout throughout
+- Moroccan colors: navy blue (#1a237e) + crimson red (#c62828)
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Do NOT run `npx expo start` directly — use `restart_workflow` instead
+- Do NOT create app.config.ts — must use static app.json
+- RTL is handled via explicit styles, not `I18nManager.forceRTL` (avoids native restart requirement)
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See the `expo` skill for mobile development guidelines
+- See the `pnpm-workspace` skill for workspace structure

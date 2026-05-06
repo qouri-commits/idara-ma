@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDARA.ma - جميع خدمات الدولة فبلاصة وحدة</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+    body { font-family: 'Cairo', sans-serif; background: #f5f7fa; margin: 0; padding: 20px; color: #1a237e; }
+   .container { max-width: 800px; margin: auto; }
+    h1 { text-align: center; font-size: 32px; margin-bottom: 10px; }
+   .subtitle { text-align: center; color: #555; margin-bottom: 30px; }
+   .search-box { width: 100%; padding: 15px; font-size: 18px; border: 2px solid #1a237e; border-radius: 12px; margin-bottom: 30px; box-sizing: border-box; }
+   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+   .section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-decoration: none; color: #1a237e; transition: 0.3s; border-right: 5px solid #c62828; }
+   .section:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+   .section h2 { margin: 0 0 10px 0; font-size: 22px; }
+   .section p { margin: 0; color: #555; font-size: 14px; }
+   .icon { font-size: 35px; margin-bottom: 10px; }
+   .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #777; border-top: 1px solid #ddd; padding-top: 20px; }
+   .service { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-right: 3px solid #1a237e; }
+   .service a { background: #1a237e; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; display: inline-block; margin-top: 8px; }
+   .warning { background: #fff3cd; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 14px; border-right: 3px solid #ffc107; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🇲🇦 IDARA.ma</h1>
+    <p class="subtitle">جميع خدمات الدولة المغربية فبلاصة وحدة. بلا ما تقلب فـ Google</p>
+
+    <input type="text" class="search-box" id="search" placeholder="🔍 كتب هنا: عقد ازدياد, لاكارط, سجل عدلي..." onkeyup="searchService()">
+
+    <div class="grid" id="sections">
+
+      <div class="section" onclick="showDetails('hawiya')">
+        <div class="icon">📘</div>
+        <h2>الهوية و الحالة المدنية</h2>
+        <p>بطاقة التعريف, عقود الازدياد, شهادة السكنى</p>
+      </div>
+
+      <div class="section" onclick="showDetails('adl')">
+        <div class="icon">⚖️</div>
+        <h2>العدل و السوابق</h2>
+        <p>السجل العدلي, الشكايات, تتبع الملفات</p>
+      </div>
+
+      <div class="section" onclick="showDetails('himaya')">
+        <div class="icon">❤️</div>
+        <h2>الدعم و الحماية الاجتماعية</h2>
+        <p>RNP, RSU, AMO تضامن, الدعم المباشر, CNSS</p>
+      </div>
+
+      <div class="section" onclick="showDetails('naql')">
+        <div class="icon">🚗</div>
+        <h2>السياقة و التنقل</h2>
+        <p>جواز السفر, رخصة السياقة, Vignette, المخالفات</p>
+      </div>
+
+      <div class="section" onclick="showDetails('aqar')">
+        <div class="icon">🏠</div>
+        <h2>الضرائب و العقار</h2>
+        <p>الضرائب, المحافظة العقارية, شهادة الملكية</p>
+      </div>
+
+      <div class="section" onclick="showDetails('taalim')">
+        <div class="icon">🎓</div>
+        <h2>التعليم و الشباب</h2>
+        <p>منحة, باك حر, التكوين المهني, جواز الشباب</p>
+      </div>
+
+    </div>
+
+    <div id="details" style="display:none; margin-top: 30px;">
+      <button onclick="hideDetails()" style="margin-bottom: 20px; padding: 10px 20px; background: #c62828; color: white; border: none; border-radius: 8px;">← رجع للأقسام</button>
+      <div id="details-content"></div>
+    </div>
+
+    <div class="footer">
+      <p><strong>IDARA.ma</strong> دليل مستقل كيجمع الروابط الرسمية فقط</p>
+      <p>لا نمثل أي جهة حكومية. جميع المعلومات و الروابط من المواقع الرسمية للدولة المغربية</p>
+      <p>آخر تحديث: ماي 2026</p>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      hawiya: {
+        title: "📘 الهوية و الحالة المدنية",
+        services: [
+          {name: "حجز موعد البطاقة الوطنية", link: "https://www.cnie.ma", docs: "البطاقة القديمة + تصويرة", source: "cnie.ma"},
+          {name: "تتبع البطاقة واش واجدة", link: "https://www.cnie.ma/suivi", docs: "رقم الطلب", source: "cnie.ma"},
+          {name: "طلب عقود الازدياد", link: "https://www.watiqa.ma", docs: "رقم البطاقة + معلومات الازدياد", source: "watiqa.ma"},
+          {name: "شهادة السكنى", link: "https://www.watiqa.ma", docs: "طلب أونلاين + تمشي للمقاطعة", warning: "خاصك تمشي للمقاطعة تسنيها", source: "watiqa.ma"}
+        ]
+      },
+      adl: {
+        title: "⚖️ العدل و السوابق",
+        services: [
+          {name: "طلب السجل العدلي", link: "https://casierjudiciaire.justice.gov.ma", docs: "نسخة البطاقة + 10 دراهم أونلاين", source: "justice.gov.ma"},
+          {name: "الشكايات الإلكترونية", link: "https://www.chikaya.ma", docs: "وصف المشكل + الوثائق", source: "chikaya.ma"}
+        ]
+      },
+      himaya: {
+        title: "❤️ الدعم و الحماية الاجتماعية",
+        services: [
+          {name: "السجل الوطني للسكان RNP", link: "https://www.rnp.ma", warning: "الخطوة 1: ضروري تمشي للمقاطعة مع لاكارط و عقود الازدياد ديال الأسرة كاملة", docs: "حضور شخصي + بصمات + تصويرة", source: "rnp.ma"},
+          {name: "السجل الاجتماعي الموحد RSU", link: "https://www.rsu.ma", docs: "خاصك المعرف الرقمي من RNP أولا", source: "rsu.ma"},
+          {name: "AMO تضامن", link: "https://www.amo.ma", docs: "من بعد ما يخرج المؤشر فـ RSU", source: "amo.ma"},
+          {name: "الدعم المباشر", link: "https://www.daam.ma", docs: "من بعد ما يخرج المؤشر فـ RSU", source: "daam.ma"}
+        ]
+      },
+      naql: {
+        title: "🚗 السياقة و التنقل",
+        services: [
+          {name: "جواز السفر", link: "https://www.passeport.ma", docs: "لاكارط + تصاور + 500 درهم", source: "passeport.ma"},
+          {name: "نقط رخصة السياقة", link: "https://www.narsa.gov.ma", docs: "رقم الرخصة", source: "narsa.gov.ma"},
+          {name: "الضريبة على السيارات Vignette", link: "https://www.vignette.ma", docs: "البطاقة الرمادية", source: "vignette.ma"}
+        ]
+      }
+    };
+
+    function showDetails(key) {
+      const section = data[key];
+      let html = `<h2>${section.title}</h2>`;
+      section.services.forEach(s => {
+        html += `<div class="service">
+          <h3>${s.name}</h3>`;
+        if(s.warning) html += `<div class="warning">⚠️ تنبيه: ${s.warning}</div>`;
+        html += `<p><strong>الوثائق:</strong> ${s.docs}</p>
+          <p><strong>المصدر:</strong> ${s.source}</p>
+          <a href="${s.link}" target="_blank">دوس هنا للموقع الرسمي</a>
+        </div>`;
+      });
+      document.getElementById('details-content').innerHTML = html;
+      document.getElementById('sections').style.display = 'none';
+      document.getElementById('details').style.display = 'block';
+    }
+
+    function hideDetails() {
+      document.getElementById('sections').style.display = 'grid';
+      document.getElementById('details').style.display = 'none';
+    }
+
+    function searchService() {
+      // البحث غادي نزيدوه من بعد
+      alert('محرك البحث غادي نزيدوه فـ النسخة الجاية. دابا دوس على القسم');
+    }
+  </script>
+</body>
+</html>

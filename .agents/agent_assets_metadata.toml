@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "KHSVO0yCMSun5lsJIcQd8"
+uri = "file://artifacts/idara-ma/assets/images/icon.png"
+type = "image"
+title = "idara ma app icon"
