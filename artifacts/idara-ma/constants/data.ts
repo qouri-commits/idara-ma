@@ -100,9 +100,9 @@ export const categories: Category[] = [
       {
         id: "amo",
         name: "AMO تضامن",
-        link: "https://www.amo.ma",
+        link: "https://www.cnss.ma/ar/assurance-maladie-obligatoire",
         docs: "من بعد ما يخرج المؤشر فـ RSU",
-        source: "amo.ma",
+        source: "cnss.ma",
       },
       {
         id: "daam",
@@ -110,6 +110,13 @@ export const categories: Category[] = [
         link: "https://www.daam.ma",
         docs: "من بعد ما يخرج المؤشر فـ RSU",
         source: "daam.ma",
+      },
+      {
+        id: "daam-sakan",
+        name: "دعم السكن",
+        link: "https://www.daamsakane.ma",
+        docs: "طلب أونلاين + بطاقة التعريف + وثيقة الوضعية العائلية",
+        source: "daamsakane.ma",
       },
     ],
   },
@@ -129,9 +136,9 @@ export const categories: Category[] = [
       {
         id: "license-points",
         name: "نقط رخصة السياقة",
-        link: "https://www.narsa.gov.ma",
+        link: "https://services.narsa.gov.ma/PermisdeConduire/",
         docs: "رقم الرخصة",
-        source: "narsa.gov.ma",
+        source: "services.narsa.gov.ma",
       },
       {
         id: "vignette",
@@ -165,7 +172,7 @@ export const categories: Category[] = [
       {
         id: "ownership-cert",
         name: "شهادة الملكية",
-        link: "https://www.ancfcc.gov.ma/attestation",
+        link: "https://www.ancfcc.gov.ma",
         docs: "رقم الرسم العقاري + بطاقة التعريف",
         source: "ancfcc.gov.ma",
       },
@@ -180,16 +187,16 @@ export const categories: Category[] = [
       {
         id: "scholarship",
         name: "المنحة الدراسية",
-        link: "https://www.cnous.ma",
+        link: "https://www.minhaty.ma",
         docs: "بطاقة التعريف + وثائق الدراسة + وثيقة الدخل",
-        source: "cnous.ma",
+        source: "minhaty.ma",
       },
       {
         id: "bac-libre",
         name: "باك الحر",
-        link: "https://www.men.gov.ma",
+        link: "https://candidaturebac.men.gov.ma",
         docs: "بطاقة التعريف + نتائج السنة السابقة",
-        source: "men.gov.ma",
+        source: "candidaturebac.men.gov.ma",
       },
       {
         id: "ofppt",
@@ -201,10 +208,15 @@ export const categories: Category[] = [
       {
         id: "youth-pass",
         name: "جواز الشباب",
-        link: "https://www.jeunesseetsports.gov.ma",
+        link: "https://www.passjeunes.ma",
         docs: "بطاقة التعريف + تصويرة",
-        source: "jeunesseetsports.gov.ma",
+        source: "passjeunes.ma",
       },
     ],
   },
 ];
+
+export const ALL_SERVICE_LINKS: { serviceId: string; url: string }[] =
+  categories.flatMap((cat) =>
+    cat.services.map((svc) => ({ serviceId: svc.id, url: svc.link }))
+  );

@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ServiceItem } from "@/components/ServiceItem";
 import { useBookmarks } from "@/contexts/BookmarksContext";
+import { useLinkStatus } from "@/contexts/LinkStatusContext";
 import { categories } from "@/constants/data";
 import { useColors } from "@/hooks/useColors";
 
@@ -21,6 +22,7 @@ export default function CategoryScreen() {
   const insets = useSafeAreaInsets();
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
   const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isLinkBroken } = useLinkStatus();
 
   const category = categories.find((c) => c.id === categoryId);
 
@@ -85,7 +87,9 @@ export default function CategoryScreen() {
             الخدمات المتاحة ({category.services.length})
           </Text>
           <View style={styles.servicesList}>
-            {category.services.map((svc) => {
+            {category.services
+              .filter((svc) => !isLinkBroken(svc.id))
+              .map((svc) => {
               const key = { categoryId: category.id, serviceId: svc.id };
               return (
                 <ServiceItem

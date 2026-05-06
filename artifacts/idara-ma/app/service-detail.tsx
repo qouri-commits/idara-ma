@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
+import { DEVELOPER_WHATSAPP } from "@/constants/config";
 import { categories } from "@/constants/data";
 import { useColors } from "@/hooks/useColors";
 
@@ -73,6 +74,18 @@ export default function ServiceDetailScreen() {
         await Share.share({ message: text });
       }
     } catch {
+      await Share.share({ message: text });
+    }
+  };
+
+  const handleReport = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const text = `السلام، الرابط ديال "${service.name}" خاسر أو ما خدامش:\n${service.link}\n\nشكرا IDARA.ma`;
+    const waUrl = `whatsapp://send?phone=${DEVELOPER_WHATSAPP}&text=${encodeURIComponent(text)}`;
+    const canWA = await Linking.canOpenURL(waUrl);
+    if (canWA) {
+      await Linking.openURL(waUrl);
+    } else {
       await Share.share({ message: text });
     }
   };
@@ -244,6 +257,19 @@ export default function ServiceDetailScreen() {
             </Text>
           </View>
         </View>
+
+        {/* Report Broken Link */}
+        <TouchableOpacity
+          onPress={handleReport}
+          activeOpacity={0.7}
+          style={[
+            styles.reportBtn,
+            { borderColor: colors.border, borderRadius: colors.radius - 4 },
+          ]}
+        >
+          <Feather name="alert-triangle" size={14} color="#b45309" />
+          <Text style={styles.reportText}>الرابط خاسر؟ بلغ عليه</Text>
+        </TouchableOpacity>
 
         {/* Disclaimer */}
         <View style={[styles.disclaimer, { borderTopColor: colors.border }]}>
@@ -422,6 +448,21 @@ const styles = StyleSheet.create({
   copyText: {
     fontSize: 12,
     fontWeight: "600",
+  },
+  reportBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderStyle: "dashed",
+  },
+  reportText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#b45309",
+    textAlign: "center",
   },
   disclaimer: {
     flexDirection: "row-reverse",
