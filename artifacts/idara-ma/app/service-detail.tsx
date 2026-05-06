@@ -13,12 +13,14 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useBookmarks } from "@/contexts/BookmarksContext";
 import { categories } from "@/constants/data";
 import { useColors } from "@/hooks/useColors";
 
 export default function ServiceDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { toggleBookmark, isBookmarked } = useBookmarks();
   const { categoryId, serviceId } = useLocalSearchParams<{
     categoryId: string;
     serviceId: string;
@@ -26,6 +28,10 @@ export default function ServiceDetailScreen() {
 
   const category = categories.find((c) => c.id === categoryId);
   const service = category?.services.find((s) => s.id === serviceId);
+  const bookmarkKey = { categoryId: categoryId ?? "", serviceId: serviceId ?? "" };
+  const starred = isBookmarked(bookmarkKey);
+
+  const toggle = toggleBookmark;
 
   if (!category || !service) {
     return (
@@ -42,6 +48,11 @@ export default function ServiceDetailScreen() {
     await WebBrowser.openBrowserAsync(service.link);
   };
 
+  const handleToggleStar = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    toggle(bookmarkKey);
+  };
+
   const topPadding = Platform.OS === "web" ? 67 : insets.top + 16;
   const bottomPadding = Platform.OS === "web" ? 34 : insets.bottom + 24;
 
@@ -54,18 +65,39 @@ export default function ServiceDetailScreen() {
           { paddingTop: topPadding, paddingBottom: bottomPadding + 80 },
         ]}
       >
-        {/* Back Button */}
-        <TouchableOpacity
-          style={[
-            styles.backButton,
-            { backgroundColor: colors.card, borderRadius: colors.radius - 4 },
-          ]}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <Feather name="arrow-right" size={18} color={colors.primary} />
-          <Text style={[styles.backText, { color: colors.primary }]}>رجوع</Text>
-        </TouchableOpacity>
+        {/* Top row: back + star */}
+        <View style={styles.topRow}>
+          <TouchableOpacity
+            onPress={handleToggleStar}
+            hitSlop={12}
+            style={[
+              styles.starButton,
+              {
+                backgroundColor: starred ? "#fef3c7" : colors.card,
+                borderRadius: colors.radius - 4,
+                borderColor: starred ? "#f59e0b" : colors.border,
+              },
+            ]}
+          >
+            <Feather
+              name="star"
+              size={20}
+              color={starred ? "#f59e0b" : colors.mutedForeground}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.backButton,
+              { backgroundColor: colors.card, borderRadius: colors.radius - 4 },
+            ]}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Feather name="arrow-right" size={18} color={colors.primary} />
+            <Text style={[styles.backText, { color: colors.primary }]}>رجوع</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Category breadcrumb */}
         <View style={styles.breadcrumb}>
@@ -149,12 +181,7 @@ export default function ServiceDetailScreen() {
         </View>
 
         {/* Disclaimer */}
-        <View
-          style={[
-            styles.disclaimer,
-            { borderTopColor: colors.border },
-          ]}
-        >
+        <View style={[styles.disclaimer, { borderTopColor: colors.border }]}>
           <Feather name="info" size={13} color={colors.mutedForeground} />
           <Text style={[styles.disclaimerText, { color: colors.mutedForeground }]}>
             IDARA.ma كيجمع الروابط الرسمية فقط. ما نمثلوش أي جهة حكومية.
@@ -176,10 +203,7 @@ export default function ServiceDetailScreen() {
         <TouchableOpacity
           style={[
             styles.ctaButton,
-            {
-              backgroundColor: colors.primary,
-              borderRadius: colors.radius,
-            },
+            { backgroundColor: colors.primary, borderRadius: colors.radius },
           ]}
           onPress={handleOpenSite}
           activeOpacity={0.85}
@@ -193,9 +217,7 @@ export default function ServiceDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   scroll: {
     paddingHorizontal: 16,
     gap: 16,
@@ -205,10 +227,14 @@ const styles = StyleSheet.create({
     marginTop: 40,
     fontSize: 16,
   },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   backButton: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-end",
     paddingHorizontal: 14,
     paddingVertical: 8,
     gap: 6,
@@ -221,6 +247,18 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  starButton: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
   },
   breadcrumb: {
     flexDirection: "row-reverse",

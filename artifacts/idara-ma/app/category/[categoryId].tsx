@@ -12,6 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ServiceItem } from "@/components/ServiceItem";
+import { useBookmarks } from "@/contexts/BookmarksContext";
 import { categories } from "@/constants/data";
 import { useColors } from "@/hooks/useColors";
 
@@ -19,6 +20,8 @@ export default function CategoryScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+
   const category = categories.find((c) => c.id === categoryId);
 
   if (!category) {
@@ -41,7 +44,7 @@ export default function CategoryScreen() {
           styles.scroll,
           {
             paddingTop: topPadding,
-            paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 24,
+            paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 80,
           },
         ]}
       >
@@ -63,10 +66,7 @@ export default function CategoryScreen() {
           <View
             style={[
               styles.iconWrapper,
-              {
-                backgroundColor: colors.secondary,
-                borderRadius: colors.radius,
-              },
+              { backgroundColor: colors.secondary, borderRadius: colors.radius },
             ]}
           >
             <Feather name={category.icon as any} size={32} color={colors.primary} />
@@ -85,23 +85,25 @@ export default function CategoryScreen() {
             الخدمات المتاحة ({category.services.length})
           </Text>
           <View style={styles.servicesList}>
-            {category.services.map((svc) => (
-              <ServiceItem
-                key={svc.id}
-                name={svc.name}
-                source={svc.source}
-                hasWarning={!!svc.warning}
-                onPress={() =>
-                  router.push({
-                    pathname: "/service-detail",
-                    params: {
-                      categoryId: category.id,
-                      serviceId: svc.id,
-                    },
-                  })
-                }
-              />
-            ))}
+            {category.services.map((svc) => {
+              const key = { categoryId: category.id, serviceId: svc.id };
+              return (
+                <ServiceItem
+                  key={svc.id}
+                  name={svc.name}
+                  source={svc.source}
+                  hasWarning={!!svc.warning}
+                  isBookmarked={isBookmarked(key)}
+                  onToggleBookmark={() => toggleBookmark(key)}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/service-detail",
+                      params: { categoryId: category.id, serviceId: svc.id },
+                    })
+                  }
+                />
+              );
+            })}
           </View>
         </View>
       </ScrollView>
@@ -110,9 +112,7 @@ export default function CategoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   scroll: {
     paddingHorizontal: 16,
     gap: 24,
