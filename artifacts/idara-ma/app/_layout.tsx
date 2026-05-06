@@ -15,6 +15,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { BookmarksProvider } from "@/contexts/BookmarksContext";
+import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,11 +58,13 @@ export default function RootLayout() {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <BookmarksProvider>
-            <GestureHandlerRootView>
-              <KeyboardProvider>
-                <RootLayoutNav />
-              </KeyboardProvider>
-            </GestureHandlerRootView>
+            <RecentlyViewedProvider>
+              <GestureHandlerRootView>
+                <KeyboardProvider>
+                  <RootLayoutNav />
+                </KeyboardProvider>
+              </GestureHandlerRootView>
+            </RecentlyViewedProvider>
           </BookmarksProvider>
         </QueryClientProvider>
       </ErrorBoundary>

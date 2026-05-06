@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useBookmarks } from "@/contexts/BookmarksContext";
+import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
 import { categories } from "@/constants/data";
 import { useColors } from "@/hooks/useColors";
 
@@ -23,6 +24,7 @@ export default function ServiceDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { toggleBookmark, isBookmarked } = useBookmarks();
+  const { addRecent } = useRecentlyViewed();
   const { categoryId, serviceId } = useLocalSearchParams<{
     categoryId: string;
     serviceId: string;
@@ -34,6 +36,12 @@ export default function ServiceDetailScreen() {
   const starred = isBookmarked(bookmarkKey);
 
   const toggle = toggleBookmark;
+
+  React.useEffect(() => {
+    if (categoryId && serviceId) {
+      addRecent({ categoryId, serviceId });
+    }
+  }, [categoryId, serviceId]);
 
   if (!category || !service) {
     return (

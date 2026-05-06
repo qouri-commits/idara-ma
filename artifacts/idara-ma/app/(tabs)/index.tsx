@@ -1,11 +1,12 @@
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-  FlatList,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,12 +15,14 @@ import { CategoryCard } from "@/components/CategoryCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultItem } from "@/components/SearchResultItem";
 import { categories } from "@/constants/data";
+import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
 import { useColors } from "@/hooks/useColors";
 
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
+  const { recentItems } = useRecentlyViewed();
 
   const searchResults = useMemo(() => {
     if (!query.trim()) return [];
@@ -54,6 +57,24 @@ export default function HomeScreen() {
     return results;
   }, [query]);
 
+  const resolvedRecent = useMemo(
+    () =>
+      recentItems
+        .map((item) => {
+          const cat = categories.find((c) => c.id === item.categoryId);
+          const svc = cat?.services.find((s) => s.id === item.serviceId);
+          if (!cat || !svc) return null;
+          return { cat, svc, ...item };
+        })
+        .filter(Boolean) as {
+        categoryId: string;
+        serviceId: string;
+        cat: (typeof categories)[0];
+        svc: (typeof categories)[0]["services"][0];
+      }[],
+    [recentItems]
+  );
+
   const topPadding = Platform.OS === "web" ? 67 : insets.top + 16;
 
   const renderCategories = () => {
@@ -64,6 +85,8 @@ export default function HomeScreen() {
     return rows;
   };
 
+  const isSearching = query.trim() !== "";
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
@@ -72,7 +95,7 @@ export default function HomeScreen() {
           styles.scroll,
           {
             paddingTop: topPadding,
-            paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 24,
+            paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 80,
           },
         ]}
         keyboardShouldPersistTaps="handled"
@@ -80,9 +103,7 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={[styles.logo, { color: colors.primary }]}>IDARA.ma</Text>
-          <View
-            style={[styles.flagBadge, { backgroundColor: colors.accent }]}
-          >
+          <View style={[styles.flagBadge, { backgroundColor: colors.accent }]}>
             <Text style={styles.flagText}>MA</Text>
           </View>
         </View>
@@ -100,7 +121,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Search Results */}
-        {query.trim() !== "" && (
+        {isSearching && (
           <View style={styles.section}>
             {searchResults.length === 0 ? (
               <View style={styles.emptySearch}>
@@ -113,7 +134,7 @@ export default function HomeScreen() {
                 <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
                   {searchResults.length} نتيجة
                 </Text>
-                <View style={styles.resultsList}>
+                <View style={styles.list}>
                   {searchResults.map((r) => (
                     <SearchResultItem
                       key={`${r.categoryId}-${r.serviceId}`}
@@ -124,10 +145,7 @@ export default function HomeScreen() {
                       onPress={() =>
                         router.push({
                           pathname: "/service-detail",
-                          params: {
-                            categoryId: r.categoryId,
-                            serviceId: r.serviceId,
-                          },
+                          params: { categoryId: r.categoryId, serviceId: r.serviceId },
                         })
                       }
                     />
@@ -138,8 +156,61 @@ export default function HomeScreen() {
           </View>
         )}
 
+        {/* آخر ما شفتي */}
+        {!isSearching && resolvedRecent.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Feather name="clock" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
+                آخر ما شفتي
+              </Text>
+            </View>
+            <View style={styles.list}>
+              {resolvedRecent.map((item) => (
+                <TouchableOpacity
+                  key={`${item.categoryId}-${item.serviceId}`}
+                  style={[
+                    styles.recentItem,
+                    {
+                      backgroundColor: colors.card,
+                      borderRadius: colors.radius,
+                      borderRightColor: colors.accent,
+                    },
+                  ]}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/service-detail",
+                      params: {
+                        categoryId: item.categoryId,
+                        serviceId: item.serviceId,
+                      },
+                    })
+                  }
+                  activeOpacity={0.75}
+                >
+                  <Feather name="chevron-left" size={16} color={colors.mutedForeground} />
+                  <View style={styles.recentContent}>
+                    <Text
+                      style={[styles.recentName, { color: colors.primary }]}
+                      numberOfLines={1}
+                    >
+                      {item.svc.name}
+                    </Text>
+                    <Text
+                      style={[styles.recentCat, { color: colors.mutedForeground }]}
+                      numberOfLines={1}
+                    >
+                      {item.cat.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* Categories Grid */}
-        {query.trim() === "" && (
+        {!isSearching && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
               الأقسام
@@ -168,13 +239,8 @@ export default function HomeScreen() {
         )}
 
         {/* Footer */}
-        {query.trim() === "" && (
-          <View
-            style={[
-              styles.footer,
-              { borderTopColor: colors.border },
-            ]}
-          >
+        {!isSearching && (
+          <View style={[styles.footer, { borderTopColor: colors.border }]}>
             <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
               IDARA.ma — دليل مستقل كيجمع الروابط الرسمية فقط
             </Text>
@@ -189,12 +255,8 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scroll: {
-    paddingHorizontal: 16,
-  },
+  container: { flex: 1 },
+  scroll: { paddingHorizontal: 16 },
   header: {
     flexDirection: "row-reverse",
     alignItems: "center",
@@ -224,12 +286,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     lineHeight: 20,
   },
-  searchWrapper: {
+  searchWrapper: { marginBottom: 24 },
+  section: {
+    gap: 10,
     marginBottom: 24,
   },
-  section: {
-    gap: 12,
-    marginBottom: 24,
+  sectionHeader: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 5,
+    alignSelf: "flex-end",
   },
   sectionTitle: {
     fontSize: 12,
@@ -238,16 +304,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
+  list: { gap: 8 },
   row: {
     flexDirection: "row-reverse",
     gap: 12,
   },
-  cardPlaceholder: {
-    flex: 1,
-  },
-  resultsList: {
-    gap: 8,
-  },
+  cardPlaceholder: { flex: 1 },
   emptySearch: {
     paddingVertical: 24,
     alignItems: "center",
@@ -255,6 +317,32 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     textAlign: "center",
+  },
+  recentItem: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    borderRightWidth: 3,
+    gap: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  recentContent: {
+    flex: 1,
+    gap: 2,
+  },
+  recentName: {
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "right",
+  },
+  recentCat: {
+    fontSize: 11,
+    textAlign: "right",
   },
   footer: {
     borderTopWidth: 1,
