@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import React from "react";
+import React, { useState } from "react";
 import {
   Linking,
   Platform,
@@ -36,6 +37,7 @@ export default function ServiceDetailScreen() {
   const starred = isBookmarked(bookmarkKey);
 
   const toggle = toggleBookmark;
+  const [copied, setCopied] = useState(false);
 
   React.useEffect(() => {
     if (categoryId && serviceId) {
@@ -73,6 +75,13 @@ export default function ServiceDetailScreen() {
     } catch {
       await Share.share({ message: text });
     }
+  };
+
+  const handleCopy = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await Clipboard.setStringAsync(service.link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleToggleStar = () => {
@@ -202,9 +211,38 @@ export default function ServiceDetailScreen() {
             </Text>
             <Feather name="globe" size={18} color={colors.primary} />
           </View>
-          <Text style={[styles.sourceValue, { color: colors.accent }]}>
-            {service.source}
-          </Text>
+          <View style={styles.sourceRow}>
+            <TouchableOpacity
+              onPress={handleCopy}
+              hitSlop={10}
+              style={[
+                styles.copyBtn,
+                {
+                  backgroundColor: copied ? "#dcfce7" : colors.secondary,
+                  borderRadius: colors.radius - 6,
+                  borderColor: copied ? "#86efac" : colors.border,
+                },
+              ]}
+              activeOpacity={0.7}
+            >
+              <Feather
+                name={copied ? "check" : "copy"}
+                size={14}
+                color={copied ? "#16a34a" : colors.mutedForeground}
+              />
+              <Text
+                style={[
+                  styles.copyText,
+                  { color: copied ? "#16a34a" : colors.mutedForeground },
+                ]}
+              >
+                {copied ? "تم النسخ" : "نسخ الرابط"}
+              </Text>
+            </TouchableOpacity>
+            <Text style={[styles.sourceValue, { color: colors.accent }]}>
+              {service.source}
+            </Text>
+          </View>
         </View>
 
         {/* Disclaimer */}
@@ -361,9 +399,28 @@ const styles = StyleSheet.create({
     textAlign: "right",
     lineHeight: 22,
   },
+  sourceRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
   sourceValue: {
     fontSize: 14,
     textAlign: "right",
+    fontWeight: "600",
+    flex: 1,
+  },
+  copyBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+  },
+  copyText: {
+    fontSize: 12,
     fontWeight: "600",
   },
   disclaimer: {
