@@ -238,6 +238,20 @@ export default function HomeScreen() {
           </View>
         )}
 
+        {/* AD_SLOT: Google AdSense — استبدل هاد الـ View بكود AdSense ملي تركبو */}
+        {!isSearching && (
+          <View
+            style={[
+              styles.adSlot,
+              { borderColor: colors.border, borderRadius: colors.radius },
+            ]}
+          >
+            <Text style={[styles.adLabel, { color: colors.mutedForeground }]}>
+              إعلان
+            </Text>
+          </View>
+        )}
+
         {/* شكون حنا؟ */}
         {!isSearching && (
           <View
@@ -397,5 +411,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "right",
     marginTop: 2,
+  },
+  adSlot: {
+    height: 90,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  adLabel: {
+    fontSize: 11,
+    letterSpacing: 1,
   },
 });
