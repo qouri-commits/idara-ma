@@ -4,8 +4,10 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
+  Linking,
   Platform,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -46,6 +48,23 @@ export default function ServiceDetailScreen() {
   const handleOpenSite = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await WebBrowser.openBrowserAsync(service.link);
+  };
+
+  const handleShare = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const text = `لقيت هاد الخدمة فـ IDARA.ma - ${service.name}. الرابط الرسمي: ${service.link}. ساهل و بالدارجة 🇲🇦`;
+    const encoded = encodeURIComponent(text);
+    const whatsappUrl = `whatsapp://send?text=${encoded}`;
+    try {
+      const canOpen = await Linking.canOpenURL(whatsappUrl);
+      if (canOpen) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        await Share.share({ message: text });
+      }
+    } catch {
+      await Share.share({ message: text });
+    }
   };
 
   const handleToggleStar = () => {
@@ -189,7 +208,7 @@ export default function ServiceDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* CTA Button */}
+      {/* CTA Buttons */}
       <View
         style={[
           styles.ctaContainer,
@@ -200,17 +219,30 @@ export default function ServiceDetailScreen() {
           },
         ]}
       >
-        <TouchableOpacity
-          style={[
-            styles.ctaButton,
-            { backgroundColor: colors.primary, borderRadius: colors.radius },
-          ]}
-          onPress={handleOpenSite}
-          activeOpacity={0.85}
-        >
-          <Feather name="external-link" size={18} color="#fff" />
-          <Text style={styles.ctaText}>دوس هنا للموقع الرسمي</Text>
-        </TouchableOpacity>
+        <View style={styles.ctaRow}>
+          {/* WhatsApp Share Button */}
+          <TouchableOpacity
+            style={[styles.shareButton, { borderRadius: colors.radius }]}
+            onPress={handleShare}
+            activeOpacity={0.85}
+          >
+            <Feather name="message-circle" size={20} color="#fff" />
+            <Text style={styles.shareText}>صيفط لصاحبك</Text>
+          </TouchableOpacity>
+
+          {/* Official Site Button */}
+          <TouchableOpacity
+            style={[
+              styles.ctaButton,
+              { backgroundColor: colors.primary, borderRadius: colors.radius },
+            ]}
+            onPress={handleOpenSite}
+            activeOpacity={0.85}
+          >
+            <Feather name="external-link" size={18} color="#fff" />
+            <Text style={styles.ctaText}>الموقع الرسمي</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -339,6 +371,24 @@ const styles = StyleSheet.create({
     textAlign: "right",
     lineHeight: 17,
   },
+  ctaRow: {
+    flexDirection: "row-reverse",
+    gap: 10,
+  },
+  shareButton: {
+    flex: 1,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 15,
+    gap: 8,
+    backgroundColor: "#25D366",
+  },
+  shareText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "700",
+  },
   ctaContainer: {
     position: "absolute",
     bottom: 0,
@@ -349,6 +399,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   ctaButton: {
+    flex: 1,
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "center",
