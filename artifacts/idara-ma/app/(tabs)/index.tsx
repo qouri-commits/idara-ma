@@ -238,14 +238,37 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* Footer */}
+        {/* شكون حنا؟ */}
         {!isSearching && (
-          <View style={[styles.footer, { borderTopColor: colors.border }]}>
-            <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
-              IDARA.ma — دليل مستقل كيجمع الروابط الرسمية فقط
+          <View
+            style={[
+              styles.aboutCard,
+              {
+                backgroundColor: colors.card,
+                borderRadius: colors.radius,
+                borderRightColor: colors.primary,
+              },
+            ]}
+          >
+            <View style={styles.aboutHeader}>
+              <Feather name="info" size={15} color={colors.primary} />
+              <Text style={[styles.aboutTitle, { color: colors.primary }]}>
+                شكون حنا؟
+              </Text>
+            </View>
+
+            <Text style={[styles.aboutLine, { color: colors.foreground }]}>
+              IDARA.ma دليل مستقل بالدارجة. كنجمعو ليك روابط الخدمات الرسمية فبلاصة وحدة باش ما تلفش.
             </Text>
-            <Text style={[styles.footerSub, { color: colors.mutedForeground }]}>
-              ماي 2026
+            <Text style={[styles.aboutLine, { color: colors.foreground }]}>
+              حنا ما نمثلوش أي جهة حكومية. جميع الروابط من المواقع الرسمية للدولة المغربية.
+            </Text>
+            <Text style={[styles.aboutLine, { color: colors.foreground }]}>
+              الهدف: نبسطو الإدارة لكل مغربي.
+            </Text>
+
+            <Text style={[styles.aboutUpdate, { color: colors.mutedForeground }]}>
+              آخر تحديث: ماي 2026
             </Text>
           </View>
         )}
@@ -344,18 +367,35 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "right",
   },
-  footer: {
-    borderTopWidth: 1,
-    paddingTop: 20,
-    gap: 4,
+  aboutCard: {
+    padding: 16,
+    borderRightWidth: 4,
+    gap: 10,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  aboutHeader: {
+    flexDirection: "row-reverse",
     alignItems: "center",
+    gap: 7,
   },
-  footerText: {
+  aboutTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    textAlign: "right",
+  },
+  aboutLine: {
+    fontSize: 13,
+    textAlign: "right",
+    lineHeight: 21,
+  },
+  aboutUpdate: {
     fontSize: 11,
-    textAlign: "center",
-  },
-  footerSub: {
-    fontSize: 10,
-    textAlign: "center",
+    textAlign: "right",
+    marginTop: 2,
   },
 });
