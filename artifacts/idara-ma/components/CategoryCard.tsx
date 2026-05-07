@@ -1,24 +1,16 @@
 import { Feather } from "@expo/vector-icons";
-import {
-  Car,
-  GraduationCap,
-  HeartHandshake,
-  Home,
-  Scale,
-  UserRound,
-} from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
 
-const LUCIDE_MAP: Record<string, React.ComponentType<{ size: number; color: string }>> = {
-  hawiya: UserRound,
-  adl: Scale,
-  himaya: HeartHandshake,
-  naql: Car,
-  aqar: Home,
-  taalim: GraduationCap,
+const FEATHER_MAP: Record<string, React.ComponentProps<typeof Feather>["name"]> = {
+  hawiya: "user",
+  adl: "briefcase",
+  himaya: "shield",
+  naql: "truck",
+  aqar: "home",
+  taalim: "book-open",
 };
 
 interface CategoryCardProps {
@@ -40,7 +32,7 @@ export function CategoryCard({
   onPress,
 }: CategoryCardProps) {
   const colors = useColors();
-  const LucideIcon = LUCIDE_MAP[categoryId];
+  const iconName = FEATHER_MAP[categoryId] ?? "grid";
 
   return (
     <TouchableOpacity
@@ -49,30 +41,27 @@ export function CategoryCard({
         {
           backgroundColor: colors.card,
           borderRadius: colors.radius,
-          borderRightColor: colors.accent,
+          borderTopColor: colors.accent,
         },
       ]}
       onPress={onPress}
-      activeOpacity={0.75}
+      activeOpacity={0.78}
     >
       {bookmarkedCount > 0 && (
-        <View style={[styles.badge, { backgroundColor: "#FFC107" }]}>
-          <Feather name="star" size={9} color="#fff" />
-          <Text style={styles.badgeNum}>{bookmarkedCount}</Text>
+        <View style={[styles.badge, { backgroundColor: colors.accent }]}>
+          <Text style={[styles.badgeNum, { color: colors.accentForeground }]}>
+            {bookmarkedCount}★
+          </Text>
         </View>
       )}
 
       <View
         style={[
           styles.iconContainer,
-          { backgroundColor: colors.secondary, borderRadius: colors.radius - 4 },
+          { backgroundColor: colors.secondary, borderRadius: colors.radius - 2 },
         ]}
       >
-        {LucideIcon ? (
-          <LucideIcon size={28} color={colors.primary} />
-        ) : (
-          <Feather name="grid" size={28} color={colors.primary} />
-        )}
+        <Feather name={iconName} size={26} color={colors.primary} />
       </View>
 
       <Text style={[styles.title, { color: colors.primary }]} numberOfLines={2}>
@@ -82,10 +71,10 @@ export function CategoryCard({
         {description}
       </Text>
       <View style={styles.footer}>
-        <Text style={[styles.count, { color: colors.accent }]}>
+        <Text style={[styles.count, { color: colors.mutedForeground }]}>
           {serviceCount} خدمات
         </Text>
-        <Feather name="chevron-left" size={16} color={colors.accent} />
+        <Feather name="chevron-left" size={14} color={colors.accent} />
       </View>
     </TouchableOpacity>
   );
@@ -93,44 +82,41 @@ export function CategoryCard({
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
+    padding: 14,
     flex: 1,
-    borderRightWidth: 4,
-    shadowColor: "#000",
+    borderTopWidth: 3,
+    shadowColor: "#0F4C5C",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 2,
     gap: 8,
     position: "relative",
   },
   badge: {
     position: "absolute",
-    top: 10,
-    left: 10,
-    zIndex: 999,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
+    top: 8,
+    left: 8,
+    zIndex: 9,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
     borderRadius: 20,
   },
-  badgeNum: { fontSize: 10, color: "#fff", fontWeight: "700" },
+  badgeNum: { fontSize: 10, fontWeight: "700" },
   iconContainer: {
-    width: 52,
-    height: 52,
+    width: 48,
+    height: 48,
     alignSelf: "flex-end",
     alignItems: "center",
     justifyContent: "center",
   },
-  title: { fontSize: 15, fontWeight: "700", textAlign: "right", lineHeight: 22 },
-  description: { fontSize: 12, textAlign: "right", lineHeight: 18 },
+  title: { fontSize: 14, fontWeight: "700", textAlign: "right", lineHeight: 20 },
+  description: { fontSize: 11, textAlign: "right", lineHeight: 17 },
   footer: {
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 4,
+    marginTop: 2,
   },
-  count: { fontSize: 12, fontWeight: "600" },
+  count: { fontSize: 11, fontWeight: "500" },
 });

@@ -122,16 +122,16 @@ export default function ServiceDetailScreen() {
             style={[
               styles.starButton,
               {
-                backgroundColor: starred ? "#fef3c7" : colors.card,
+                backgroundColor: starred ? "#FFF8D6" : colors.card,
                 borderRadius: colors.radius - 4,
-                borderColor: starred ? "#f59e0b" : colors.border,
+                borderColor: starred ? colors.accent : colors.border,
               },
             ]}
           >
             <Feather
               name="star"
               size={20}
-              color={starred ? "#f59e0b" : colors.mutedForeground}
+              color={starred ? colors.accent : colors.mutedForeground}
             />
           </TouchableOpacity>
 

@@ -44,10 +44,10 @@ export default function TabLayout() {
             <Feather
               name="star"
               size={22}
-              color={focused ? "#f59e0b" : color}
+              color={focused ? "#FFC107" : color}
             />
           ),
-          tabBarActiveTintColor: "#f59e0b",
+          tabBarActiveTintColor: "#FFC107",
         }}
       />
       <Tabs.Screen

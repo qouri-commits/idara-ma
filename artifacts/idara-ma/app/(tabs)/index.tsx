@@ -109,7 +109,7 @@ export default function HomeScreen() {
             hitSlop={12}
             style={styles.headerStar}
           >
-            <Feather name="star" size={22} color="#f59e0b" />
+            <Feather name="star" size={22} color="#FFC107" />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
             <Text style={[styles.logo, { color: colors.primary }]}>IDARA.ma</Text>

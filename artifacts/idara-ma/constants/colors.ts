@@ -1,41 +1,41 @@
 const colors = {
   light: {
-    text: "#1a237e",
-    tint: "#c62828",
+    text: "#0F4C5C",
+    tint: "#FFC107",
 
-    background: "#f0f2fa",
-    foreground: "#1a237e",
+    background: "#F4F7F8",
+    foreground: "#1A2B30",
 
-    card: "#ffffff",
-    cardForeground: "#1a237e",
+    card: "#FFFFFF",
+    cardForeground: "#1A2B30",
 
-    primary: "#1a237e",
-    primaryForeground: "#ffffff",
+    primary: "#0F4C5C",
+    primaryForeground: "#FFFFFF",
 
-    secondary: "#e8eaf6",
-    secondaryForeground: "#1a237e",
+    secondary: "#E4EEF1",
+    secondaryForeground: "#0F4C5C",
 
-    muted: "#e8eaf6",
-    mutedForeground: "#6b7280",
+    muted: "#E4EEF1",
+    mutedForeground: "#5F8090",
 
-    accent: "#c62828",
-    accentForeground: "#ffffff",
+    accent: "#FFC107",
+    accentForeground: "#1A2B30",
 
     destructive: "#ef4444",
     destructiveForeground: "#ffffff",
 
-    border: "#dde1f0",
-    input: "#dde1f0",
+    border: "#D5E4E9",
+    input: "#D5E4E9",
 
-    warning: "#fff8e1",
-    warningBorder: "#f59e0b",
-    warningText: "#92400e",
+    warning: "#FFFBEB",
+    warningBorder: "#FFC107",
+    warningText: "#78560A",
 
-    serviceBg: "#f8f9fa",
-    serviceBorder: "#1a237e",
+    serviceBg: "#F4F7F8",
+    serviceBorder: "#0F4C5C",
   },
 
-  radius: 12,
+  radius: 10,
 };
 
 export default colors;

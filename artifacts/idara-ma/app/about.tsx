@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  badgeText: { color: "#fff", fontSize: 14, fontWeight: "700", letterSpacing: 1 },
+  badgeText: { color: "#1A2B30", fontSize: 14, fontWeight: "700", letterSpacing: 1 },
   logoText: { fontSize: 36, fontWeight: "800", letterSpacing: -0.5 },
   tagline: { fontSize: 14, textAlign: "center", lineHeight: 22 },
   card: {

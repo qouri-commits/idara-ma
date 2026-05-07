@@ -42,7 +42,7 @@ export default function BookmarksScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Feather name="star" size={22} color="#f59e0b" />
+          <Feather name="star" size={22} color="#FFC107" />
           <Text style={[styles.title, { color: colors.primary }]}>المفضلة ديالي</Text>
         </View>
 

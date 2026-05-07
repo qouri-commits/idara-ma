@@ -14,7 +14,7 @@ A Moroccan government services directory mobile app — helps citizens find all 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Mobile: Expo (SDK 54), Expo Router (file-based routing)
 - UI: React Native + StyleSheet, @expo/vector-icons (Feather)
-- Fonts: Inter (pre-loaded), splash in crimson red (#c62828)
+- Fonts: Inter (pre-loaded), splash in teal (#0F4C5C)
 
 ## Where things live
 
@@ -29,6 +29,8 @@ A Moroccan government services directory mobile app — helps citizens find all 
 
 - Frontend-only: all data is static in `constants/data.ts` — no backend needed for a directory app
 - RTL-first: all styles use `textAlign: 'right'` and `flexDirection: 'row-reverse'` for Arabic layout
+- No heavy animation libraries — lightweight by design (no Reanimated usage in screens, lucide-react-native removed)
+- All colors go through `useColors()` hook — no hardcoded hex except `#FFC107` (accent/star) and `#25D366` (WhatsApp)
 - Stack navigation (no visible tab bar): browse categories → services → detail
 - expo-web-browser opens official government sites in an in-app browser
 - `userInterfaceStyle: "light"` — app is light mode only (government services app)
@@ -44,7 +46,8 @@ A Moroccan government services directory mobile app — helps citizens find all 
 
 - Arabic/Darija language UI
 - RTL layout throughout
-- Moroccan colors: navy blue (#1a237e) + crimson red (#c62828)
+- Colors: teal primary (#0F4C5C) + amber accent (#FFC107) — professional & consistent
+- App must load in under 2 seconds — no heavy libs, no large images, minimal shadows
 
 ## Gotchas
 

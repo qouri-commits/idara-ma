@@ -48,8 +48,7 @@ export function ServiceItem({
           <Feather
             name="star"
             size={18}
-            color={isBookmarked ? "#f59e0b" : colors.border}
-            fill={isBookmarked ? "#f59e0b" : "none"}
+            color={isBookmarked ? colors.accent : colors.border}
           />
         </TouchableOpacity>
       )}
