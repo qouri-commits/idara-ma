@@ -15,6 +15,7 @@ import { CategoryCard } from "@/components/CategoryCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultItem } from "@/components/SearchResultItem";
 import { categories } from "@/constants/data";
+import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const { recentItems } = useRecentlyViewed();
+  const { isBookmarked } = useBookmarks();
 
   const searchResults = useMemo(() => {
     if (!query.trim()) return [];
@@ -102,10 +104,20 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.logo, { color: colors.primary }]}>IDARA.ma</Text>
-          <View style={[styles.flagBadge, { backgroundColor: colors.accent }]}>
-            <Text style={styles.flagText}>MA</Text>
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/bookmarks")}
+            hitSlop={12}
+            style={styles.headerStar}
+          >
+            <Feather name="star" size={22} color="#f59e0b" />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={[styles.logo, { color: colors.primary }]}>IDARA.ma</Text>
+            <View style={[styles.flagBadge, { backgroundColor: colors.accent }]}>
+              <Text style={styles.flagText}>MA</Text>
+            </View>
           </View>
+          <View style={styles.headerPlaceholder} />
         </View>
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
           جميع خدمات الدولة المغربية فبلاصة وحدة
@@ -220,10 +232,14 @@ export default function HomeScreen() {
                 {row.map((cat) => (
                   <CategoryCard
                     key={cat.id}
+                    categoryId={cat.id}
                     title={cat.title}
                     description={cat.description}
                     icon={cat.icon}
                     serviceCount={cat.services.length}
+                    bookmarkedCount={cat.services.filter((s) =>
+                      isBookmarked({ categoryId: cat.id, serviceId: s.id })
+                    ).length}
                     onPress={() =>
                       router.push({
                         pathname: "/category/[categoryId]",
@@ -238,23 +254,12 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* AD_SLOT: Google AdSense — استبدل هاد الـ View بكود AdSense ملي تركبو */}
-        {!isSearching && (
-          <View
-            style={[
-              styles.adSlot,
-              { borderColor: colors.border, borderRadius: colors.radius },
-            ]}
-          >
-            <Text style={[styles.adLabel, { color: colors.mutedForeground }]}>
-              إعلان
-            </Text>
-          </View>
-        )}
+        {/* AD_SLOT — بلاصة AdMob من بعد */}
+        {!isSearching && <View style={styles.adSlot} />}
 
         {/* شكون حنا؟ */}
         {!isSearching && (
-          <View
+          <TouchableOpacity
             style={[
               styles.aboutCard,
               {
@@ -263,27 +268,37 @@ export default function HomeScreen() {
                 borderRightColor: colors.primary,
               },
             ]}
+            onPress={() => router.push("/about")}
+            activeOpacity={0.85}
           >
             <View style={styles.aboutHeader}>
+              <Feather name="chevron-left" size={15} color={colors.mutedForeground} />
               <Feather name="info" size={15} color={colors.primary} />
               <Text style={[styles.aboutTitle, { color: colors.primary }]}>
                 شكون حنا؟
               </Text>
             </View>
-
             <Text style={[styles.aboutLine, { color: colors.foreground }]}>
               IDARA.ma دليل مستقل بالدارجة. كنجمعو ليك روابط الخدمات الرسمية فبلاصة وحدة باش ما تلفش.
             </Text>
-            <Text style={[styles.aboutLine, { color: colors.foreground }]}>
-              حنا ما نمثلوش أي جهة حكومية. جميع الروابط من المواقع الرسمية للدولة المغربية.
-            </Text>
-            <Text style={[styles.aboutLine, { color: colors.foreground }]}>
-              الهدف: نبسطو الإدارة لكل مغربي.
-            </Text>
-
             <Text style={[styles.aboutUpdate, { color: colors.mutedForeground }]}>
               آخر تحديث: ماي 2026
             </Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Footer */}
+        {!isSearching && (
+          <View style={styles.footerRow}>
+            <TouchableOpacity onPress={() => router.push("/privacy")}>
+              <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>الخصوصية</Text>
+            </TouchableOpacity>
+            <Text style={[styles.footerDot, { color: colors.border }]}>•</Text>
+            <TouchableOpacity onPress={() => router.push("/contact")}>
+              <Text style={[styles.footerLink, { color: colors.mutedForeground }]}>تواصل معنا</Text>
+            </TouchableOpacity>
+            <Text style={[styles.footerDot, { color: colors.border }]}>•</Text>
+            <Text style={[styles.footerCopy, { color: colors.mutedForeground }]}>IDARA.ma © 2026</Text>
           </View>
         )}
       </ScrollView>
@@ -295,11 +310,21 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { paddingHorizontal: 16 },
   header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  headerStar: {
+    padding: 4,
+  },
+  headerCenter: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    justifyContent: "center",
     gap: 10,
-    marginBottom: 4,
+  },
+  headerPlaceholder: {
+    width: 30,
   },
   logo: {
     fontSize: 30,
@@ -413,15 +438,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   adSlot: {
-    height: 90,
-    borderWidth: 1,
-    borderStyle: "dashed",
+    height: 50,
+  },
+  footerRow: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+    flexWrap: "wrap",
+    gap: 8,
+    paddingBottom: 8,
   },
-  adLabel: {
-    fontSize: 11,
-    letterSpacing: 1,
-  },
+  footerLink: { fontSize: 11, fontWeight: "600" },
+  footerDot: { fontSize: 12 },
+  footerCopy: { fontSize: 11 },
 });

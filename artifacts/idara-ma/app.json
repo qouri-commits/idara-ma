@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false
     },
-    "android": {},
+    "android": { "package": "ma.idara.app" },
     "web": {
       "favicon": "./assets/images/icon.png"
     },

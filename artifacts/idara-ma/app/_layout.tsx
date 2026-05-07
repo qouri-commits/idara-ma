@@ -34,6 +34,18 @@ function RootLayoutNav() {
         name="service-detail"
         options={{ headerShown: false, animation: "slide_from_left" }}
       />
+      <Stack.Screen
+        name="contact"
+        options={{ headerShown: false, animation: "slide_from_left" }}
+      />
+      <Stack.Screen
+        name="privacy"
+        options={{ headerShown: false, animation: "slide_from_left" }}
+      />
+      <Stack.Screen
+        name="about"
+        options={{ headerShown: false, animation: "slide_from_left" }}
+      />
     </Stack>
   );
 }
