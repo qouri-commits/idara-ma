@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AdBanner } from "@/components/AdBanner";
 import { ServiceItem } from "@/components/ServiceItem";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useLinkStatus } from "@/contexts/LinkStatusContext";
@@ -144,6 +145,9 @@ export default function CategoryScreen() {
             />
           </View>
         )}
+
+        {/* Ad Banner */}
+        <AdBanner topMargin={0} bottomMargin={4} />
 
         {/* Services */}
         <View style={styles.servicesSection}>

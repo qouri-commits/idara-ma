@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AdBanner } from "@/components/AdBanner";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
 import { DEVELOPER_WHATSAPP } from "@/constants/config";
@@ -313,6 +314,9 @@ export default function ServiceDetailScreen() {
             IDARA.ma كيجمع الروابط الرسمية فقط. ما نمثلوش أي جهة حكومية.
           </Text>
         </View>
+
+        {/* ─── Ad Banner ─── */}
+        <AdBanner topMargin={4} bottomMargin={0} />
       </ScrollView>
 
       {/* ─── CTA Buttons ─── */}

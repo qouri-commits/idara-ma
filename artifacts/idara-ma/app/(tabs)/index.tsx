@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AdBanner } from "@/components/AdBanner";
 import { CategoryCard } from "@/components/CategoryCard";
 import { QuickChip } from "@/components/QuickChip";
 import { SearchBar } from "@/components/SearchBar";
@@ -359,6 +360,9 @@ export default function HomeScreen() {
             </Text>
           </TouchableOpacity>
         )}
+
+        {/* ─── Ad Banner ─── */}
+        {!isSearching && <AdBanner topMargin={0} bottomMargin={4} />}
 
         {/* ─── Footer ─── */}
         {!isSearching && (
