@@ -45,12 +45,12 @@ export function CategoryCard({
         },
       ]}
       onPress={onPress}
-      activeOpacity={0.78}
+      activeOpacity={0.75}
     >
       {bookmarkedCount > 0 && (
         <View style={[styles.badge, { backgroundColor: colors.accent }]}>
-          <Text style={[styles.badgeNum, { color: colors.accentForeground }]}>
-            {bookmarkedCount}★
+          <Text style={[styles.badgeNum, { color: "#fff" }]}>
+            ★ {bookmarkedCount}
           </Text>
         </View>
       )}
@@ -61,7 +61,7 @@ export function CategoryCard({
           { backgroundColor: colors.secondary, borderRadius: colors.radius - 2 },
         ]}
       >
-        <Feather name={iconName} size={26} color={colors.primary} />
+        <Feather name={iconName} size={28} color={colors.primary} />
       </View>
 
       <Text style={[styles.title, { color: colors.primary }]} numberOfLines={2}>
@@ -70,11 +70,14 @@ export function CategoryCard({
       <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
         {description}
       </Text>
+
       <View style={styles.footer}>
-        <Text style={[styles.count, { color: colors.mutedForeground }]}>
-          {serviceCount} خدمات
-        </Text>
-        <Feather name="chevron-left" size={14} color={colors.accent} />
+        <View style={[styles.countPill, { backgroundColor: colors.secondary }]}>
+          <Text style={[styles.countText, { color: colors.primary }]}>
+            {serviceCount} خدمة
+          </Text>
+        </View>
+        <Feather name="chevron-left" size={15} color={colors.accent} />
       </View>
     </TouchableOpacity>
   );
@@ -86,37 +89,43 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 3,
     shadowColor: "#0F4C5C",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 6,
-    elevation: 2,
-    gap: 8,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.09,
+    shadowRadius: 8,
+    elevation: 3,
+    gap: 9,
     position: "relative",
+    minHeight: 158,
   },
   badge: {
     position: "absolute",
-    top: 8,
-    left: 8,
+    top: 10,
+    left: 10,
     zIndex: 9,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
     borderRadius: 20,
   },
-  badgeNum: { fontSize: 10, fontWeight: "700" },
+  badgeNum: { fontSize: 10, fontWeight: "800" },
   iconContainer: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     alignSelf: "flex-end",
     alignItems: "center",
     justifyContent: "center",
   },
-  title: { fontSize: 14, fontWeight: "700", textAlign: "right", lineHeight: 20 },
-  description: { fontSize: 11, textAlign: "right", lineHeight: 17 },
+  title: { fontSize: 14, fontWeight: "800", textAlign: "right", lineHeight: 20 },
+  description: { fontSize: 11, textAlign: "right", lineHeight: 16, flex: 1 },
   footer: {
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 2,
   },
-  count: { fontSize: 11, fontWeight: "500" },
+  countPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 20,
+  },
+  countText: { fontSize: 10, fontWeight: "700" },
 });

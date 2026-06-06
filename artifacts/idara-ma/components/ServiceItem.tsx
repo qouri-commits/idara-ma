@@ -34,37 +34,31 @@ export function ServiceItem({
       style={[
         styles.item,
         {
-          backgroundColor: colors.card,
+          backgroundColor: isBookmarked ? "#FFFDF0" : colors.card,
           borderRadius: colors.radius,
-          borderRightColor: colors.primary,
+          borderRightColor: isBookmarked ? colors.accent : colors.primary,
         },
       ]}
       onPress={onPress}
       activeOpacity={0.75}
     >
-      {/* Star button on the left (RTL = visual left) */}
-      {onToggleBookmark && (
-        <TouchableOpacity onPress={handleBookmark} hitSlop={12} style={styles.starBtn}>
-          <Feather
-            name="star"
-            size={18}
-            color={isBookmarked ? colors.accent : colors.border}
-          />
-        </TouchableOpacity>
-      )}
+      <View style={styles.chevron}>
+        <Feather name="chevron-left" size={18} color={isBookmarked ? colors.accent : colors.primary} />
+      </View>
 
       <View style={styles.content}>
-        <Text style={[styles.name, { color: colors.primary }]} numberOfLines={2}>
+        <Text
+          style={[styles.name, { color: isBookmarked ? colors.primary : colors.primary }]}
+          numberOfLines={2}
+        >
           {name}
         </Text>
         <View style={styles.meta}>
           {hasWarning && (
-            <Feather
-              name="alert-triangle"
-              size={12}
-              color={colors.warningBorder}
-              style={styles.warnIcon}
-            />
+            <View style={[styles.warnPill, { backgroundColor: "#FEF3C7" }]}>
+              <Feather name="alert-triangle" size={10} color="#D97706" />
+              <Text style={styles.warnText}>تنبيه</Text>
+            </View>
           )}
           <Text style={[styles.source, { color: colors.mutedForeground }]}>
             {source}
@@ -72,9 +66,22 @@ export function ServiceItem({
         </View>
       </View>
 
-      <View style={styles.chevron}>
-        <Feather name="chevron-left" size={18} color={colors.primary} />
-      </View>
+      {onToggleBookmark && (
+        <TouchableOpacity
+          onPress={handleBookmark}
+          hitSlop={12}
+          style={[
+            styles.starBtn,
+            isBookmarked && { backgroundColor: "#FFF8D6", borderRadius: 20 },
+          ]}
+        >
+          <Feather
+            name="star"
+            size={17}
+            color={isBookmarked ? "#FFC107" : colors.border}
+          />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 }
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    paddingVertical: 14,
+    paddingVertical: 13,
     paddingHorizontal: 14,
     borderRightWidth: 3,
     shadowColor: "#000",
@@ -94,17 +101,18 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   chevron: {
-    width: 24,
+    width: 22,
     alignItems: "center",
   },
   starBtn: {
-    width: 28,
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
   },
   content: {
     flex: 1,
-    gap: 4,
+    gap: 5,
   },
   name: {
     fontSize: 14,
@@ -115,13 +123,23 @@ const styles = StyleSheet.create({
   meta: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
   },
   source: {
     fontSize: 11,
     textAlign: "right",
   },
-  warnIcon: {
-    marginLeft: 2,
+  warnPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  warnText: {
+    fontSize: 9,
+    fontWeight: "700",
+    color: "#D97706",
   },
 });

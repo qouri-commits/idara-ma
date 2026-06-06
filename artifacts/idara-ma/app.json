@@ -11,12 +11,19 @@
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#c62828"
+      "backgroundColor": "#0F4C5C"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "ma.idara.app"
     },
-    "android": { "package": "ma.idara.app" },
+    "android": {
+      "package": "ma.idara.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#0F4C5C"
+      }
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -33,6 +40,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d8b9bbe-5d98-4a82-a60f-d3938207752a"
+      }
+    },
+    "owner": "yakt"
   }
 }

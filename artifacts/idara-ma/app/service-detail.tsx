@@ -36,8 +36,6 @@ export default function ServiceDetailScreen() {
   const service = category?.services.find((s) => s.id === serviceId);
   const bookmarkKey = { categoryId: categoryId ?? "", serviceId: serviceId ?? "" };
   const starred = isBookmarked(bookmarkKey);
-
-  const toggle = toggleBookmark;
   const [copied, setCopied] = useState(false);
 
   React.useEffect(() => {
@@ -56,6 +54,11 @@ export default function ServiceDetailScreen() {
     );
   }
 
+  const docItems = service.docs
+    .split(/\s*\+\s*/)
+    .map((d) => d.trim())
+    .filter(Boolean);
+
   const handleOpenSite = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await WebBrowser.openBrowserAsync(service.link);
@@ -63,7 +66,7 @@ export default function ServiceDetailScreen() {
 
   const handleShare = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const text = `لقيت هاد الخدمة فـ IDARA.ma - ${service.name}. الرابط الرسمي: ${service.link}. ساهل و بالدارجة 🇲🇦`;
+    const text = `لقيت هاد الخدمة فـ IDARA.ma:\n${service.name}\n\nالرابط الرسمي: ${service.link}\n\n🇲🇦 ساهل و بالدارجة`;
     const encoded = encodeURIComponent(text);
     const whatsappUrl = `whatsapp://send?text=${encoded}`;
     try {
@@ -99,7 +102,7 @@ export default function ServiceDetailScreen() {
 
   const handleToggleStar = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    toggle(bookmarkKey);
+    toggleBookmark(bookmarkKey);
   };
 
   const topPadding = Platform.OS === "web" ? 67 : insets.top + 16;
@@ -111,10 +114,10 @@ export default function ServiceDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           styles.scroll,
-          { paddingTop: topPadding, paddingBottom: bottomPadding + 80 },
+          { paddingTop: topPadding, paddingBottom: bottomPadding + 90 },
         ]}
       >
-        {/* Top row: back + star */}
+        {/* ─── Top Bar ─── */}
         <View style={styles.topRow}>
           <TouchableOpacity
             onPress={handleToggleStar}
@@ -148,20 +151,35 @@ export default function ServiceDetailScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Category breadcrumb */}
-        <View style={styles.breadcrumb}>
-          <Feather name={category.icon as any} size={14} color={colors.mutedForeground} />
+        {/* ─── Breadcrumb ─── */}
+        <TouchableOpacity
+          style={styles.breadcrumb}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <Feather name={category.icon as any} size={13} color={colors.mutedForeground} />
           <Text style={[styles.breadcrumbText, { color: colors.mutedForeground }]}>
             {category.title}
           </Text>
-        </View>
+          <Feather name="chevron-left" size={12} color={colors.border} />
+        </TouchableOpacity>
 
-        {/* Service Title */}
+        {/* ─── Service Title ─── */}
         <Text style={[styles.serviceTitle, { color: colors.primary }]}>
           {service.name}
         </Text>
 
-        {/* Warning */}
+        {/* ─── Source badge ─── */}
+        <View style={styles.sourceBadgeRow}>
+          <View style={[styles.sourceBadge, { backgroundColor: colors.secondary, borderRadius: 20 }]}>
+            <Feather name="globe" size={12} color={colors.primary} />
+            <Text style={[styles.sourceBadgeText, { color: colors.primary }]}>
+              {service.source}
+            </Text>
+          </View>
+        </View>
+
+        {/* ─── Warning ─── */}
         {service.warning && (
           <View
             style={[
@@ -185,7 +203,7 @@ export default function ServiceDetailScreen() {
           </View>
         )}
 
-        {/* Required Documents */}
+        {/* ─── Required Documents ─── */}
         <View
           style={[
             styles.infoCard,
@@ -202,12 +220,26 @@ export default function ServiceDetailScreen() {
             </Text>
             <Feather name="file-text" size={18} color={colors.primary} />
           </View>
-          <Text style={[styles.infoValue, { color: colors.foreground }]}>
-            {service.docs}
-          </Text>
+
+          {docItems.length > 1 ? (
+            <View style={styles.docList}>
+              {docItems.map((doc, idx) => (
+                <View key={idx} style={styles.docItem}>
+                  <Text style={[styles.docText, { color: colors.foreground }]}>
+                    {doc}
+                  </Text>
+                  <View style={[styles.docDot, { backgroundColor: colors.accent }]} />
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text style={[styles.infoValue, { color: colors.foreground }]}>
+              {service.docs}
+            </Text>
+          )}
         </View>
 
-        {/* Source */}
+        {/* ─── Official Link ─── */}
         <View
           style={[
             styles.infoCard,
@@ -220,11 +252,11 @@ export default function ServiceDetailScreen() {
         >
           <View style={styles.infoHeader}>
             <Text style={[styles.infoLabel, { color: colors.primary }]}>
-              الموقع الرسمي
+              الرابط الرسمي
             </Text>
-            <Feather name="globe" size={18} color={colors.primary} />
+            <Feather name="link" size={18} color={colors.primary} />
           </View>
-          <View style={styles.sourceRow}>
+          <View style={styles.linkRow}>
             <TouchableOpacity
               onPress={handleCopy}
               hitSlop={10}
@@ -249,16 +281,19 @@ export default function ServiceDetailScreen() {
                   { color: copied ? "#16a34a" : colors.mutedForeground },
                 ]}
               >
-                {copied ? "تم النسخ" : "نسخ الرابط"}
+                {copied ? "تم النسخ ✓" : "نسخ الرابط"}
               </Text>
             </TouchableOpacity>
-            <Text style={[styles.sourceValue, { color: colors.accent }]}>
+            <Text
+              style={[styles.linkUrl, { color: colors.accent }]}
+              numberOfLines={1}
+            >
               {service.source}
             </Text>
           </View>
         </View>
 
-        {/* Report Broken Link */}
+        {/* ─── Report ─── */}
         <TouchableOpacity
           onPress={handleReport}
           activeOpacity={0.7}
@@ -267,11 +302,11 @@ export default function ServiceDetailScreen() {
             { borderColor: colors.border, borderRadius: colors.radius - 4 },
           ]}
         >
-          <Feather name="alert-triangle" size={14} color="#b45309" />
+          <Feather name="alert-circle" size={14} color="#b45309" />
           <Text style={styles.reportText}>الرابط خاسر؟ بلغ عليه</Text>
         </TouchableOpacity>
 
-        {/* Disclaimer */}
+        {/* ─── Disclaimer ─── */}
         <View style={[styles.disclaimer, { borderTopColor: colors.border }]}>
           <Feather name="info" size={13} color={colors.mutedForeground} />
           <Text style={[styles.disclaimerText, { color: colors.mutedForeground }]}>
@@ -280,7 +315,7 @@ export default function ServiceDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* CTA Buttons */}
+      {/* ─── CTA Buttons ─── */}
       <View
         style={[
           styles.ctaContainer,
@@ -292,17 +327,15 @@ export default function ServiceDetailScreen() {
         ]}
       >
         <View style={styles.ctaRow}>
-          {/* WhatsApp Share Button */}
           <TouchableOpacity
             style={[styles.shareButton, { borderRadius: colors.radius }]}
             onPress={handleShare}
             activeOpacity={0.85}
           >
-            <Feather name="message-circle" size={20} color="#fff" />
+            <Feather name="message-circle" size={18} color="#fff" />
             <Text style={styles.shareText}>صيفط لصاحبك</Text>
           </TouchableOpacity>
 
-          {/* Official Site Button */}
           <TouchableOpacity
             style={[
               styles.ctaButton,
@@ -312,7 +345,7 @@ export default function ServiceDetailScreen() {
             activeOpacity={0.85}
           >
             <Feather name="external-link" size={18} color="#fff" />
-            <Text style={styles.ctaText}>الموقع الرسمي</Text>
+            <Text style={styles.ctaText}>افتح الموقع الرسمي</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -324,13 +357,14 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: {
     paddingHorizontal: 16,
-    gap: 16,
+    gap: 14,
   },
   errorText: {
     textAlign: "center",
     marginTop: 40,
     fontSize: 16,
   },
+
   topRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -340,7 +374,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 9,
     gap: 6,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -348,13 +382,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  backText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
+  backText: { fontSize: 14, fontWeight: "600" },
   starButton: {
-    width: 40,
-    height: 40,
+    width: 42,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
@@ -364,22 +395,36 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
+
   breadcrumb: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 6,
+    gap: 5,
     alignSelf: "flex-end",
   },
-  breadcrumbText: {
-    fontSize: 12,
-    textAlign: "right",
-  },
+  breadcrumbText: { fontSize: 12 },
+
   serviceTitle: {
     fontSize: 22,
     fontWeight: "800",
     textAlign: "right",
     lineHeight: 32,
   },
+
+  sourceBadgeRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: -4,
+  },
+  sourceBadge: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  sourceBadgeText: { fontSize: 11, fontWeight: "700" },
+
   warningBox: {
     padding: 14,
     borderRightWidth: 4,
@@ -390,20 +435,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  warningLabel: {
-    fontSize: 14,
-    fontWeight: "700",
-    textAlign: "right",
-  },
-  warningText: {
-    fontSize: 13,
-    textAlign: "right",
-    lineHeight: 20,
-  },
+  warningLabel: { fontSize: 14, fontWeight: "700", textAlign: "right" },
+  warningText: { fontSize: 13, textAlign: "right", lineHeight: 20 },
+
   infoCard: {
     padding: 16,
     borderRightWidth: 4,
-    gap: 10,
+    gap: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -415,40 +453,50 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  infoLabel: {
-    fontSize: 13,
-    fontWeight: "700",
-    textAlign: "right",
+  infoLabel: { fontSize: 13, fontWeight: "700", textAlign: "right" },
+  infoValue: { fontSize: 14, textAlign: "right", lineHeight: 22 },
+
+  docList: { gap: 8 },
+  docItem: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 10,
   },
-  infoValue: {
+  docDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    flexShrink: 0,
+  },
+  docText: {
+    flex: 1,
     fontSize: 14,
     textAlign: "right",
     lineHeight: 22,
   },
-  sourceRow: {
+
+  linkRow: {
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
   },
-  sourceValue: {
-    fontSize: 14,
-    textAlign: "right",
+  linkUrl: {
+    fontSize: 13,
     fontWeight: "600",
     flex: 1,
+    textAlign: "right",
   },
   copyBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderWidth: 1,
   },
-  copyText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
+  copyText: { fontSize: 12, fontWeight: "600" },
+
   reportBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -464,18 +512,29 @@ const styles = StyleSheet.create({
     color: "#b45309",
     textAlign: "center",
   },
+
   disclaimer: {
     flexDirection: "row-reverse",
     alignItems: "flex-start",
     gap: 8,
     borderTopWidth: 1,
-    paddingTop: 16,
+    paddingTop: 14,
   },
   disclaimerText: {
     flex: 1,
     fontSize: 11,
     textAlign: "right",
     lineHeight: 17,
+  },
+
+  ctaContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
   },
   ctaRow: {
     flexDirection: "row-reverse",
@@ -490,31 +549,14 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: "#25D366",
   },
-  shareText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  ctaContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    borderTopWidth: 1,
-  },
+  shareText: { color: "#fff", fontSize: 14, fontWeight: "700" },
   ctaButton: {
-    flex: 1,
+    flex: 1.6,
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 15,
-    gap: 10,
+    gap: 8,
   },
-  ctaText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "700",
-  },
+  ctaText: { color: "#fff", fontSize: 15, fontWeight: "700" },
 });

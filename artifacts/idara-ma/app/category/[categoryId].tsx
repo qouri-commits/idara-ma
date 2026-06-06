@@ -1,11 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -23,6 +24,7 @@ export default function CategoryScreen() {
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { isLinkBroken } = useLinkStatus();
+  const [filter, setFilter] = useState("");
 
   const category = categories.find((c) => c.id === categoryId);
 
@@ -35,6 +37,19 @@ export default function CategoryScreen() {
       </View>
     );
   }
+
+  const visibleServices = category.services
+    .filter((svc) => !isLinkBroken(svc.id))
+    .filter((svc) =>
+      filter.trim()
+        ? svc.name.toLowerCase().includes(filter.toLowerCase()) ||
+          svc.source.toLowerCase().includes(filter.toLowerCase())
+        : true
+    );
+
+  const bookmarkedCount = category.services.filter((svc) =>
+    isBookmarked({ categoryId: category.id, serviceId: svc.id })
+  ).length;
 
   const topPadding = Platform.OS === "web" ? 67 : insets.top + 16;
 
@@ -49,8 +64,9 @@ export default function CategoryScreen() {
             paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 80,
           },
         ]}
+        keyboardShouldPersistTaps="handled"
       >
-        {/* Back Button */}
+        {/* Back */}
         <TouchableOpacity
           style={[
             styles.backButton,
@@ -79,36 +95,98 @@ export default function CategoryScreen() {
           <Text style={[styles.categoryDesc, { color: colors.mutedForeground }]}>
             {category.description}
           </Text>
+
+          {/* Stats row */}
+          <View style={styles.statsRow}>
+            <View style={[styles.statPill, { backgroundColor: colors.secondary }]}>
+              <Feather name="list" size={11} color={colors.primary} />
+              <Text style={[styles.statText, { color: colors.primary }]}>
+                {category.services.length} خدمة
+              </Text>
+            </View>
+            {bookmarkedCount > 0 && (
+              <View style={[styles.statPill, { backgroundColor: "#FFF8D6" }]}>
+                <Feather name="star" size={11} color="#FFC107" />
+                <Text style={[styles.statText, { color: "#78560A" }]}>
+                  {bookmarkedCount} محفوظة
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
+
+        {/* Filter bar (only for categories with many services) */}
+        {category.services.length >= 6 && (
+          <View
+            style={[
+              styles.filterBar,
+              {
+                backgroundColor: colors.card,
+                borderRadius: colors.radius,
+                borderColor: filter ? colors.primary : colors.border,
+              },
+            ]}
+          >
+            <TouchableOpacity onPress={() => setFilter("")} style={styles.filterIcon}>
+              <Feather
+                name={filter ? "x" : "search"}
+                size={16}
+                color={filter ? colors.primary : colors.mutedForeground}
+              />
+            </TouchableOpacity>
+            <TextInput
+              value={filter}
+              onChangeText={setFilter}
+              placeholder="فلتر الخدمات..."
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.filterInput, { color: colors.primary }]}
+              textAlign="right"
+            />
+          </View>
+        )}
 
         {/* Services */}
         <View style={styles.servicesSection}>
-          <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
-            الخدمات المتاحة ({category.services.length})
-          </Text>
-          <View style={styles.servicesList}>
-            {category.services
-              .filter((svc) => !isLinkBroken(svc.id))
-              .map((svc) => {
-              const key = { categoryId: category.id, serviceId: svc.id };
-              return (
-                <ServiceItem
-                  key={svc.id}
-                  name={svc.name}
-                  source={svc.source}
-                  hasWarning={!!svc.warning}
-                  isBookmarked={isBookmarked(key)}
-                  onToggleBookmark={() => toggleBookmark(key)}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/service-detail",
-                      params: { categoryId: category.id, serviceId: svc.id },
-                    })
-                  }
-                />
-              );
-            })}
-          </View>
+          {filter.trim() ? (
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
+              {visibleServices.length} نتيجة
+            </Text>
+          ) : (
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
+              الخدمات المتاحة ({category.services.length})
+            </Text>
+          )}
+
+          {visibleServices.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Feather name="inbox" size={32} color={colors.border} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                ما كاين والو
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.servicesList}>
+              {visibleServices.map((svc) => {
+                const key = { categoryId: category.id, serviceId: svc.id };
+                return (
+                  <ServiceItem
+                    key={svc.id}
+                    name={svc.name}
+                    source={svc.source}
+                    hasWarning={!!svc.warning}
+                    isBookmarked={isBookmarked(key)}
+                    onToggleBookmark={() => toggleBookmark(key)}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/service-detail",
+                        params: { categoryId: category.id, serviceId: svc.id },
+                      })
+                    }
+                  />
+                );
+              })}
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -119,7 +197,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: {
     paddingHorizontal: 16,
-    gap: 24,
+    gap: 20,
   },
   errorText: {
     textAlign: "center",
@@ -131,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-end",
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 9,
     gap: 6,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -139,13 +217,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  backText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
+  backText: { fontSize: 14, fontWeight: "600" },
+
   categoryHeader: {
     alignItems: "flex-end",
-    gap: 10,
+    gap: 8,
   },
   iconWrapper: {
     width: 64,
@@ -164,16 +240,50 @@ const styles = StyleSheet.create({
     textAlign: "right",
     lineHeight: 20,
   },
-  servicesSection: {
-    gap: 12,
+  statsRow: {
+    flexDirection: "row-reverse",
+    gap: 8,
+    marginTop: 4,
   },
+  statPill: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  statText: { fontSize: 11, fontWeight: "700" },
+
+  filterBar: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    height: 44,
+    borderWidth: 1.5,
+  },
+  filterIcon: { padding: 4 },
+  filterInput: {
+    flex: 1,
+    fontSize: 14,
+    paddingHorizontal: 8,
+  },
+
+  servicesSection: { gap: 10 },
   sectionLabel: {
     fontSize: 12,
     fontWeight: "600",
     textAlign: "right",
     letterSpacing: 0.5,
   },
-  servicesList: {
-    gap: 8,
+  servicesList: { gap: 8 },
+  emptyState: {
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 32,
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: "center",
   },
 });

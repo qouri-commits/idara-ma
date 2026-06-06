@@ -12,12 +12,31 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryCard } from "@/components/CategoryCard";
+import { QuickChip } from "@/components/QuickChip";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultItem } from "@/components/SearchResultItem";
 import { categories } from "@/constants/data";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useRecentlyViewed } from "@/contexts/RecentlyViewedContext";
 import { useColors } from "@/hooks/useColors";
+
+const QUICK_SERVICES: {
+  label: string;
+  categoryId: string;
+  serviceId: string;
+  icon: React.ComponentProps<typeof Feather>["name"];
+}[] = [
+  { label: "البطاقة الوطنية", categoryId: "hawiya", serviceId: "cnie-appointment", icon: "credit-card" },
+  { label: "جواز السفر", categoryId: "hawiya", serviceId: "passport", icon: "book" },
+  { label: "RSU", categoryId: "himaya", serviceId: "rsu", icon: "users" },
+  { label: "السجل العدلي", categoryId: "adl", serviceId: "criminal-record", icon: "file-text" },
+  { label: "Vignette", categoryId: "naql", serviceId: "vignette", icon: "tag" },
+  { label: "CNSS", categoryId: "himaya", serviceId: "cnss-services", icon: "shield" },
+  { label: "منحة Minhaty", categoryId: "taalim", serviceId: "scholarship", icon: "award" },
+  { label: "دعم السكن", categoryId: "himaya", serviceId: "daam-sakan", icon: "home" },
+];
+
+const TOTAL_SERVICES = categories.reduce((s, c) => s + c.services.length, 0);
 
 export default function HomeScreen() {
   const colors = useColors();
@@ -78,6 +97,7 @@ export default function HomeScreen() {
   );
 
   const topPadding = Platform.OS === "web" ? 67 : insets.top + 16;
+  const isSearching = query.trim() !== "";
 
   const renderCategories = () => {
     const rows: (typeof categories)[] = [];
@@ -86,8 +106,6 @@ export default function HomeScreen() {
     }
     return rows;
   };
-
-  const isSearching = query.trim() !== "";
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -102,7 +120,7 @@ export default function HomeScreen() {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
+        {/* ─── Header ─── */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.push("/(tabs)/bookmarks")}
@@ -111,19 +129,37 @@ export default function HomeScreen() {
           >
             <Feather name="star" size={22} color="#FFC107" />
           </TouchableOpacity>
+
           <View style={styles.headerCenter}>
             <Text style={[styles.logo, { color: colors.primary }]}>IDARA.ma</Text>
             <View style={[styles.flagBadge, { backgroundColor: colors.accent }]}>
-              <Text style={styles.flagText}>MA</Text>
+              <Text style={styles.flagText}>🇲🇦</Text>
             </View>
           </View>
+
           <View style={styles.headerPlaceholder} />
         </View>
+
+        {/* ─── Subtitle + Stats ─── */}
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
           جميع خدمات الدولة المغربية فبلاصة وحدة
         </Text>
+        <View style={styles.statsRow}>
+          <View style={[styles.statPill, { backgroundColor: colors.secondary }]}>
+            <Feather name="grid" size={11} color={colors.primary} />
+            <Text style={[styles.statText, { color: colors.primary }]}>
+              {categories.length} أقسام
+            </Text>
+          </View>
+          <View style={[styles.statPill, { backgroundColor: colors.secondary }]}>
+            <Feather name="check-circle" size={11} color={colors.primary} />
+            <Text style={[styles.statText, { color: colors.primary }]}>
+              {TOTAL_SERVICES} خدمة رسمية
+            </Text>
+          </View>
+        </View>
 
-        {/* Search */}
+        {/* ─── Search ─── */}
         <View style={styles.searchWrapper}>
           <SearchBar
             value={query}
@@ -132,13 +168,17 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Search Results */}
+        {/* ─── Search Results ─── */}
         {isSearching && (
           <View style={styles.section}>
             {searchResults.length === 0 ? (
               <View style={styles.emptySearch}>
+                <Feather name="search" size={32} color={colors.border} />
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                   ما كاين والو لـ "{query}"
+                </Text>
+                <Text style={[styles.emptyHint, { color: colors.mutedForeground }]}>
+                  جرب تكتب: باكالوريا، CNSS، رخصة...
                 </Text>
               </View>
             ) : (
@@ -168,7 +208,39 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* آخر ما شفتي */}
+        {/* ─── Quick Access ─── */}
+        {!isSearching && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Feather name="zap" size={13} color={colors.accent} />
+              <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
+                الأكثر طلباً
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.chipsRow}
+              style={styles.chipsScroll}
+            >
+              {QUICK_SERVICES.map((q) => (
+                <QuickChip
+                  key={q.serviceId}
+                  label={q.label}
+                  icon={q.icon}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/service-detail",
+                      params: { categoryId: q.categoryId, serviceId: q.serviceId },
+                    })
+                  }
+                />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* ─── آخر ما شفتي ─── */}
         {!isSearching && resolvedRecent.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -215,18 +287,22 @@ export default function HomeScreen() {
                       {item.cat.title}
                     </Text>
                   </View>
+                  <Feather name="clock" size={13} color={colors.border} />
                 </TouchableOpacity>
               ))}
             </View>
           </View>
         )}
 
-        {/* Categories Grid */}
+        {/* ─── Categories Grid ─── */}
         {!isSearching && (
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
-              الأقسام
-            </Text>
+            <View style={styles.sectionHeader}>
+              <Feather name="grid" size={13} color={colors.mutedForeground} />
+              <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
+                الأقسام
+              </Text>
+            </View>
             {renderCategories().map((row, rowIndex) => (
               <View key={rowIndex} style={styles.row}>
                 {row.map((cat) => (
@@ -254,10 +330,7 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* AD_SLOT — بلاصة AdMob من بعد */}
-        {!isSearching && <View style={styles.adSlot} />}
-
-        {/* شكون حنا؟ */}
+        {/* ─── شكون حنا؟ ─── */}
         {!isSearching && (
           <TouchableOpacity
             style={[
@@ -282,12 +355,12 @@ export default function HomeScreen() {
               IDARA.ma دليل مستقل بالدارجة. كنجمعو ليك روابط الخدمات الرسمية فبلاصة وحدة باش ما تلفش.
             </Text>
             <Text style={[styles.aboutUpdate, { color: colors.mutedForeground }]}>
-              آخر تحديث: ماي 2026
+              آخر تحديث: يونيو 2026
             </Text>
           </TouchableOpacity>
         )}
 
-        {/* Footer */}
+        {/* ─── Footer ─── */}
         {!isSearching && (
           <View style={styles.footerRow}>
             <TouchableOpacity onPress={() => router.push("/privacy")}>
@@ -309,23 +382,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { paddingHorizontal: 16 },
+
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  headerStar: {
-    padding: 4,
-  },
+  headerStar: { padding: 4 },
   headerCenter: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 10,
+    gap: 8,
   },
-  headerPlaceholder: {
-    width: 30,
-  },
+  headerPlaceholder: { width: 30 },
   logo: {
     fontSize: 30,
     fontWeight: "800",
@@ -333,26 +403,39 @@ const styles = StyleSheet.create({
   },
   flagBadge: {
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
-  flagText: {
-    color: "#fff",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1,
-  },
+  flagText: { fontSize: 16 },
+
   subtitle: {
     fontSize: 13,
     textAlign: "center",
-    marginBottom: 20,
     lineHeight: 20,
+    marginBottom: 10,
   },
-  searchWrapper: { marginBottom: 24 },
-  section: {
-    gap: 10,
-    marginBottom: 24,
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 20,
   },
+  statPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  statText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+
+  searchWrapper: { marginBottom: 22 },
+
+  section: { gap: 10, marginBottom: 24 },
   sectionHeader: {
     flexDirection: "row-reverse",
     alignItems: "center",
@@ -361,30 +444,44 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
     textAlign: "right",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
   list: { gap: 8 },
-  row: {
+
+  chipsScroll: { marginHorizontal: -16 },
+  chipsRow: {
     flexDirection: "row-reverse",
-    gap: 12,
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
   },
+
+  row: { flexDirection: "row-reverse", gap: 12 },
   cardPlaceholder: { flex: 1 },
+
   emptySearch: {
-    paddingVertical: 24,
+    paddingVertical: 28,
     alignItems: "center",
+    gap: 8,
   },
   emptyText: {
     fontSize: 14,
     textAlign: "center",
+    fontWeight: "600",
   },
+  emptyHint: {
+    fontSize: 12,
+    textAlign: "center",
+  },
+
   recentItem: {
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingVertical: 11,
+    paddingVertical: 12,
     borderRightWidth: 3,
     gap: 10,
     shadowColor: "#000",
@@ -393,10 +490,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  recentContent: {
-    flex: 1,
-    gap: 2,
-  },
+  recentContent: { flex: 1, gap: 2 },
   recentName: {
     fontSize: 13,
     fontWeight: "600",
@@ -406,6 +500,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "right",
   },
+
   aboutCard: {
     padding: 16,
     borderRightWidth: 4,
@@ -435,11 +530,8 @@ const styles = StyleSheet.create({
   aboutUpdate: {
     fontSize: 11,
     textAlign: "right",
-    marginTop: 2,
   },
-  adSlot: {
-    height: 50,
-  },
+
   footerRow: {
     flexDirection: "row",
     alignItems: "center",

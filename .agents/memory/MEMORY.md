@@ -1,0 +1,1 @@
+- [EAS Build in Replit](eas-build-trick.md) — use GIT_OPTIONAL_LOCKS=0 + local pnpm eas-cli; npx fails with missing deps; project ID 2d8b9bbe for yakt/idara-ma
