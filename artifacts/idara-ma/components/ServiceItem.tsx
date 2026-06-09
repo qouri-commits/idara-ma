@@ -51,7 +51,7 @@ export function ServiceItem({
           style={[styles.name, { color: isBookmarked ? colors.primary : colors.primary }]}
           numberOfLines={2}
         >
-          {name}
+          {"\u200F"}{name}
         </Text>
         <View style={styles.meta}>
           {hasWarning && (

@@ -39,7 +39,7 @@ export function SearchResultItem({
       </View>
       <View style={styles.content}>
         <Text style={[styles.name, { color: colors.primary }]} numberOfLines={2}>
-          {serviceName}
+          {"\u200F"}{serviceName}
         </Text>
         <View style={styles.meta}>
           {hasWarning && (
@@ -50,7 +50,7 @@ export function SearchResultItem({
             />
           )}
           <Text style={[styles.category, { color: colors.mutedForeground }]}>
-            {categoryTitle} · {source}
+            {"\u200F"}{categoryTitle} · {source}
           </Text>
         </View>
       </View>

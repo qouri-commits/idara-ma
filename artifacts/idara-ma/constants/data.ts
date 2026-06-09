@@ -148,9 +148,9 @@ export const categories: Category[] = [
       {
         id: "gendarmerie",
         name: "الدرك الملكي — خدمات إلكترونية",
-        link: "https://www.gendarmerie.ma",
+        link: "https://www.gr.gov.ma",
         docs: "رقم البطاقة الوطنية",
-        source: "gendarmerie.ma",
+        source: "gr.gov.ma",
       },
       {
         id: "cndh",
@@ -184,7 +184,7 @@ export const categories: Category[] = [
     id: "himaya",
     title: "الدعم و الحماية الاجتماعية",
     icon: "heart",
-    description: "RNP، RSU، AMO، الدعم المباشر، CNSS، CNOPS، التشغيل، التقاعد",
+    description: "الدعم المباشر، التشغيل، التقاعد، CNSS، CNOPS، AMO، RNP، RSU",
     services: [
       {
         id: "rnp",
@@ -342,13 +342,6 @@ export const categories: Category[] = [
         docs: "البطاقة الرمادية + وثيقة التأمين الساريين",
         source: "narsa.gov.ma",
         warning: "الفحص التقني كيكون كل سنة للسيارات فوق 5 سنوات",
-      },
-      {
-        id: "passport-naql",
-        name: "جواز السفر — طلب وتجديد",
-        link: "https://www.passeport.ma",
-        docs: "لاكارط الوطنية + تصاور + 500 درهم",
-        source: "passeport.ma",
       },
       {
         id: "oncf",

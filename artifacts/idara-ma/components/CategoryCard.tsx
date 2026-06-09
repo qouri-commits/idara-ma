@@ -65,10 +65,10 @@ export function CategoryCard({
       </View>
 
       <Text style={[styles.title, { color: colors.primary }]} numberOfLines={2}>
-        {title}
+        {"\u200F"}{title}
       </Text>
       <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
-        {description}
+        {"\u200F"}{description}
       </Text>
 
       <View style={styles.footer}>

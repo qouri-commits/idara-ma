@@ -167,7 +167,7 @@ export default function ServiceDetailScreen() {
 
         {/* ─── Service Title ─── */}
         <Text style={[styles.serviceTitle, { color: colors.primary }]}>
-          {service.name}
+          {"\u200F"}{service.name}
         </Text>
 
         {/* ─── Source badge ─── */}
@@ -199,7 +199,7 @@ export default function ServiceDetailScreen() {
               <Feather name="alert-triangle" size={16} color={colors.warningBorder} />
             </View>
             <Text style={[styles.warningText, { color: colors.warningText }]}>
-              {service.warning}
+              {"\u200F"}{service.warning}
             </Text>
           </View>
         )}
@@ -227,7 +227,7 @@ export default function ServiceDetailScreen() {
               {docItems.map((doc, idx) => (
                 <View key={idx} style={styles.docItem}>
                   <Text style={[styles.docText, { color: colors.foreground }]}>
-                    {doc}
+                    {"\u200F"}{doc}
                   </Text>
                   <View style={[styles.docDot, { backgroundColor: colors.accent }]} />
                 </View>
@@ -235,7 +235,7 @@ export default function ServiceDetailScreen() {
             </View>
           ) : (
             <Text style={[styles.infoValue, { color: colors.foreground }]}>
-              {service.docs}
+              {"\u200F"}{service.docs}
             </Text>
           )}
         </View>
