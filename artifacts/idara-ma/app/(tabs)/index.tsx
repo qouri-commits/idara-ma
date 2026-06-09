@@ -138,7 +138,13 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          <View style={styles.headerPlaceholder} />
+          <TouchableOpacity
+            onPress={() => router.push("/about")}
+            hitSlop={12}
+            style={styles.headerStar}
+          >
+            <Feather name="info" size={21} color={colors.primary} />
+          </TouchableOpacity>
         </View>
 
         {/* ─── Subtitle + Stats ─── */}
