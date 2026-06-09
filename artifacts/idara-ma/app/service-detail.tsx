@@ -217,7 +217,7 @@ export default function ServiceDetailScreen() {
         >
           <View style={styles.infoHeader}>
             <Text style={[styles.infoLabel, { color: colors.primary }]}>
-              الوثائق المطلوبة
+              الوثائق المتوقعة عادةً
             </Text>
             <Feather name="file-text" size={18} color={colors.primary} />
           </View>
@@ -238,6 +238,13 @@ export default function ServiceDetailScreen() {
               {"\u200F"}{service.docs}
             </Text>
           )}
+
+          <View style={[styles.docsDisclaimer, { borderTopColor: colors.border }]}>
+            <Feather name="info" size={12} color={colors.mutedForeground} />
+            <Text style={[styles.docsDisclaimerText, { color: colors.mutedForeground }]}>
+              هاد القائمة تقريبية — تحقق من الوثائق الرسمية في الموقع
+            </Text>
+          </View>
         </View>
 
         {/* ─── Official Link ─── */}
@@ -459,6 +466,21 @@ const styles = StyleSheet.create({
   },
   infoLabel: { fontSize: 13, fontWeight: "700", textAlign: "right" },
   infoValue: { fontSize: 14, textAlign: "right", lineHeight: 22 },
+
+  docsDisclaimer: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 6,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    marginTop: 4,
+  },
+  docsDisclaimerText: {
+    fontSize: 11,
+    textAlign: "right",
+    flex: 1,
+    lineHeight: 16,
+  },
 
   docList: { gap: 8 },
   docItem: {
