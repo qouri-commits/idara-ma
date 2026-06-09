@@ -90,14 +90,6 @@ export const categories: Category[] = [
         docs: "لا يلزم تسجيل — معلومات و توجيه إداري",
         source: "maroc.ma",
       },
-      {
-        id: "diwan",
-        name: "ديوان المظالم — وسيط المملكة",
-        link: "https://www.diwan.ma",
-        docs: "شكاية مكتوبة + وثائق الملف + نسخة البطاقة",
-        source: "diwan.ma",
-        warning: "مخصص للشكايات من الإدارات العمومية — مجاني وسري",
-      },
     ],
   },
 
@@ -130,13 +122,6 @@ export const categories: Category[] = [
         link: "https://www.justice.gov.ma",
         docs: "تسجيل بالإيميل",
         source: "justice.gov.ma",
-      },
-      {
-        id: "e-justice",
-        name: "تتبع الملفات القضائية إلكترونياً",
-        link: "https://e-justice.justice.gov.ma",
-        docs: "رقم الملف القضائي + رقم البطاقة الوطنية",
-        source: "e-justice.justice.gov.ma",
       },
       {
         id: "dgsn",
@@ -269,9 +254,9 @@ export const categories: Category[] = [
       {
         id: "tayssir",
         name: "منحة تيسير للأسر ذات الأطفال المتمدرسين",
-        link: "https://www.tayssir.gov.ma",
+        link: "https://www.tayssir.ma",
         docs: "شهادة تمدرس الطفل + بطاقة التعريف + رقم حساب بريدي",
-        source: "tayssir.gov.ma",
+        source: "tayssir.ma",
       },
       {
         id: "entraide",
@@ -302,9 +287,9 @@ export const categories: Category[] = [
       {
         id: "license-points",
         name: "استشارة نقط رخصة السياقة",
-        link: "https://services.narsa.gov.ma/PermisdeConduire/",
+        link: "https://www.narsa.ma",
         docs: "رقم رخصة السياقة",
-        source: "services.narsa.gov.ma",
+        source: "narsa.ma",
       },
       {
         id: "vignette",
@@ -316,31 +301,23 @@ export const categories: Category[] = [
       {
         id: "narsa-main",
         name: "تسجيل السيارة والبطاقة الرمادية — NARSA",
-        link: "https://narsa.gov.ma",
+        link: "https://www.narsa.ma",
         docs: "فاكتورة الشراء أو عقد الانتقال + بطاقة التعريف + وثيقة التأمين",
-        source: "narsa.gov.ma",
-      },
-      {
-        id: "contraventions",
-        name: "دفع مخالفات السير إلكترونياً",
-        link: "https://www.contraventions.ma",
-        docs: "رقم PV المخالفة أو رقم البطاقة الرمادية",
-        source: "contraventions.ma",
-        warning: "الدفع الفوري داخل 15 يوم يخفض الغرامة بنسبة 50%",
+        source: "narsa.ma",
       },
       {
         id: "narsa-permis-code",
         name: "استدعاء اختبار الرخصة النظري والتطبيقي",
-        link: "https://services.narsa.gov.ma",
+        link: "https://www.narsa.ma",
         docs: "رقم الطلب من مدرسة السياقة + رقم البطاقة الوطنية",
-        source: "services.narsa.gov.ma",
+        source: "narsa.ma",
       },
       {
         id: "narsa-visite-technique",
         name: "الفحص التقني للسيارة — مواعيد ومراكز",
-        link: "https://narsa.gov.ma",
+        link: "https://www.narsa.ma",
         docs: "البطاقة الرمادية + وثيقة التأمين الساريين",
-        source: "narsa.gov.ma",
+        source: "narsa.ma",
         warning: "الفحص التقني كيكون كل سنة للسيارات فوق 5 سنوات",
       },
       {
@@ -439,13 +416,6 @@ export const categories: Category[] = [
         docs: "جميع وثائق التأسيس في شباك وحدة — مجاني",
         source: "invest.ma",
       },
-      {
-        id: "dar-moukawil",
-        name: "دار المقاول — دعم المقاولات الصغيرة",
-        link: "https://www.darmoukawil.ma",
-        docs: "بطاقة التعريف + الفكرة المشروع",
-        source: "darmoukawil.ma",
-      },
     ],
   },
 
@@ -476,16 +446,16 @@ export const categories: Category[] = [
       {
         id: "bac-libre",
         name: "التسجيل في باك الأحرار",
-        link: "https://candidaturebac.men.gov.ma",
+        link: "https://bac.men.gov.ma",
         docs: "بطاقة التعريف + نتائج السنة الماضية",
-        source: "men.gov.ma",
+        source: "bac.men.gov.ma",
       },
       {
         id: "tawjihi",
-        name: "التوجيه الجامعي — Tawjihi",
-        link: "https://www.tawjihi.ma",
+        name: "التوجيه الجامعي — الاختيار والتسجيل",
+        link: "https://orientation.men.gov.ma",
         docs: "نتيجة الباكالوريا + شعبة الدراسة",
-        source: "tawjihi.ma",
+        source: "men.gov.ma",
       },
       {
         id: "scholarship",
