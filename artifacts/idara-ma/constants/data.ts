@@ -282,7 +282,7 @@ export const categories: Category[] = [
     id: "naql",
     title: "السياقة و التنقل",
     icon: "navigation",
-    description: "رخصة السياقة، Vignette، تسجيل السيارة، المخالفات، قطار، باص",
+    description: "رخصة السياقة، Vignette، تسجيل السيارة، قطار، باص",
     services: [
       {
         id: "license-points",
@@ -290,6 +290,7 @@ export const categories: Category[] = [
         link: "https://www.narsa.ma",
         docs: "رقم رخصة السياقة",
         source: "narsa.ma",
+        warning: "افتح الموقع ثم اختر خدمات رخصة السياقة من القائمة الرئيسية",
       },
       {
         id: "vignette",
@@ -304,6 +305,7 @@ export const categories: Category[] = [
         link: "https://www.narsa.ma",
         docs: "فاكتورة الشراء أو عقد الانتقال + بطاقة التعريف + وثيقة التأمين",
         source: "narsa.ma",
+        warning: "افتح الموقع ثم اختر تسجيل المركبات من الخدمات الإلكترونية",
       },
       {
         id: "narsa-permis-code",
@@ -311,6 +313,7 @@ export const categories: Category[] = [
         link: "https://www.narsa.ma",
         docs: "رقم الطلب من مدرسة السياقة + رقم البطاقة الوطنية",
         source: "narsa.ma",
+        warning: "افتح الموقع ثم ابحث عن خدمة الاستدعاء لاختبار الرخصة",
       },
       {
         id: "narsa-visite-technique",
